@@ -249,7 +249,8 @@
     a.card-link {
       text-decoration: none;
       color: inherit;
-      display: block;
+      display: flex;
+      flex-direction: column;
       border-radius: var(--radius);
       overflow: hidden;
       background: var(--nova-card-bg);
@@ -286,6 +287,9 @@
 
     .card-body {
       padding: 16px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
     }
 
     .card-meta {
@@ -353,6 +357,7 @@
     }
 
     .card-info {
+      margin-top: auto;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -473,57 +478,79 @@ const EVENTS = [
   {"id":1133,"title":"Future Leaders | Schwarzman Scholars, Milan","format":"ON_SITE","start_date":"2026-05-28T05:00:00Z","top_rated":false,"location":"Milan","few_tickets_left":false,"public_link":"https://app.novatalent.com/events/1133","event_type":"Other"}
 ];
 
-/* ── Image system ── */
-const KEYWORD_RULES = [
-  { keywords: ['long run', 'run'], images: ['photo-1552674605-db6ffd4facb5','photo-1571008887538-b36bb32f4571','photo-1461896836934-bd45ba27ee5f'] },
-  { keywords: ['padel'], images: ['photo-1554068865-24cecd4e34b8','photo-1599474924187-334a4ae5bd3c'] },
-  { keywords: ['bowling'], images: ['photo-1545232979-8bf68ee9b1af'] },
-  { keywords: ['art','prada','museum'], images: ['photo-1536924940564-58f3ceab5568','photo-1544967082-d9d25d867d66'] },
-  { keywords: ['karaoke'], images: ['photo-1516450360452-9312f5e86fc7'] },
-  { keywords: ['shooting','clay'], images: ['photo-1595590424283-b8f17842773f'] },
-  { keywords: ['tour','theatre','historical'], images: ['photo-1555992828-ca4dbe41d294','photo-1506905925346-21bda4d32df4'] },
-  { keywords: ['hike'], images: ['photo-1551632811-561732d1e306'] },
-  { keywords: ['symposium','thinking'], images: ['photo-1515187029135-18ee286d815b'] },
-  { keywords: ['coaching'], images: ['photo-1552664730-d307ca884978'] },
-  { keywords: ['networking','speed networking'], images: ['photo-1515187029135-18ee286d815b','photo-1528605248644-14dd04022da1'] },
-  { keywords: ['google','marketing','ai','tech'], images: ['photo-1540575467063-178a50c2df87','photo-1485827404703-89b55fcc595e'] },
-  { keywords: ['startup','funding','unicorn'], images: ['photo-1559136555-9303baea8ebd','photo-1553877522-43269d4ea984'] },
-  { keywords: ['public speaking'], images: ['photo-1475721027785-f74eccf877e2'] },
-  { keywords: ['gourmet','wine'], images: ['photo-1414235077428-338989a2e8c0'] }
-];
-
-const TYPE_IMAGES = {
-  'Afterwork': ['photo-1543007630-9710e4a00a20','photo-1575444758702-4a6b9222c016','photo-1551024709-8f23befc6f87','photo-1530103862676-de8c9debad1d','photo-1516450360452-9312f5e86fc7','photo-1528495612343-9ca9f4a4de28','photo-1519671482749-fd09be7ccebf','photo-1513558161293-cdaf765ed2fd','photo-1470225620780-dba8ba36b745','photo-1566417713940-fe7c737a9ef2'],
-  'C-Level Dinner': ['photo-1414235077428-338989a2e8c0','photo-1559339352-11d035aa65de','photo-1517248135467-4c7edcad34c4','photo-1550966871-3ed3cdb51f3a','photo-1544148103-0773bf10d330','photo-1466978913421-dad2ebd01d17','photo-1560439514-4e9645039924','photo-1560439514-4e9645039924'],
-  'C-Level Talks': ['photo-1475721027785-f74eccf877e2','photo-1560439514-4e9645039924','photo-1591115765373-5207764f72e7','photo-1505373877841-8d25f7d46678','photo-1558618666-fcd25c85f82e','photo-1552664730-d307ca884978'],
-  'Nova Knowledge': ['photo-1540575467063-178a50c2df87','photo-1524178232363-1fb2b075b655','photo-1558618666-fcd25c85f82e','photo-1552664730-d307ca884978','photo-1515187029135-18ee286d815b','photo-1559136555-9303baea8ebd','photo-1505373877841-8d25f7d46678','photo-1553877522-43269d4ea984'],
-  'Meetup': ['photo-1529156069898-49953e39b3ac','photo-1528605248644-14dd04022da1','photo-1511578314322-379afb476865','photo-1515187029135-18ee286d815b','photo-1530103862676-de8c9debad1d','photo-1506905925346-21bda4d32df4'],
-  'Weekend': ['photo-1506905925346-21bda4d32df4','photo-1533107862482-0e6974b06ec4','photo-1536924940564-58f3ceab5568','photo-1544967082-d9d25d867d66','photo-1551632811-561732d1e306','photo-1476480862126-209bfaa8edc8'],
-  'Padel Event': ['photo-1554068865-24cecd4e34b8','photo-1599474924187-334a4ae5bd3c','photo-1622279457486-62dcc4a431d6'],
-  'Dine out': ['photo-1517248135467-4c7edcad34c4','photo-1466978913421-dad2ebd01d17','photo-1414235077428-338989a2e8c0','photo-1528605248644-14dd04022da1'],
-  'Senior Dine Out': ['photo-1559339352-11d035aa65de','photo-1550966871-3ed3cdb51f3a','photo-1544148103-0773bf10d330','photo-1517248135467-4c7edcad34c4'],
-  'Nova Session': ['photo-1524178232363-1fb2b075b655','photo-1577896851231-70ef18881571','photo-1540575467063-178a50c2df87','photo-1505373877841-8d25f7d46678'],
-  'Nova Stories': ['photo-1529156069898-49953e39b3ac','photo-1543007630-9710e4a00a20','photo-1528605248644-14dd04022da1','photo-1519671482749-fd09be7ccebf'],
-  'Other': ['photo-1511578314322-379afb476865','photo-1540575467063-178a50c2df87','photo-1506905925346-21bda4d32df4','photo-1529156069898-49953e39b3ac']
+/* ── Image system: 55 unique photos, one per event ── */
+const EVENT_IMAGES = {
+  // C-Level Dinners — elegant dining, people at dinner tables
+  1084: 'photo-1414235077428-338989a2e8c0', // elegant dinner setting
+  995:  'photo-1559339352-11d035aa65de',  // fine dining table
+  970:  'photo-1544148103-0773bf10d330',  // upscale restaurant people
+  1117: 'photo-1550966871-3ed3cdb51f3a',  // candlelit dinner
+  1088: 'photo-1466978913421-dad2ebd01d17', // dinner party group
+  1083: 'photo-1517248135467-4c7edcad34c4', // restaurant ambiance
+  1021: 'photo-1507003211169-0a1dd7228f2d', // business dinner setting
+  1087: 'photo-1560439514-4e9645039924',  // formal event people
+  1114: 'photo-1600891964092-4316c288032e', // business people dining
+  // C-Level Talks — speakers, audiences, panels
+  1085: 'photo-1475721027785-f74eccf877e2', // speaker on stage
+  1104: 'photo-1591115765373-5207764f72e7', // conference audience
+  // Afterwork — people socializing, drinks, bars, smiling groups
+  1103: 'photo-1543007630-9710e4a00a20',  // friends at bar laughing
+  965:  'photo-1575444758702-4a6b9222c016', // cocktails social group
+  1025: 'photo-1530103862676-de8c9debad1d', // people cheering with drinks
+  1116: 'photo-1519671482749-fd09be7ccebf', // friends clinking glasses
+  1105: 'photo-1516450360452-9312f5e86fc7', // karaoke fun people
+  1121: 'photo-1528495612343-9ca9f4a4de28', // rooftop bar social
+  1108: 'photo-1513558161293-cdaf765ed2fd', // wine bar people chatting
+  1091: 'photo-1595590424283-b8f17842773f', // clay shooting sport
+  1120: 'photo-1566417713940-fe7c737a9ef2', // evening drinks group
+  1075: 'photo-1470225620780-dba8ba36b745', // social gathering drinks
+  972:  'photo-1551024709-8f23befc6f87',  // craft cocktail bar
+  1119: 'photo-1571204829887-3b8d69e4094d', // friends toasting wine
+  1089: 'photo-1527529482837-4698179dc6ce', // pub with people socializing
+  1074: 'photo-1572116469696-31de0f17cc34', // neon cocktail bar
+  1094: 'photo-1574391884720-bbc3740c59d1', // group at bar counter
+  // Nova Knowledge — conferences, workshops, learning
+  1131: 'photo-1559136555-9303baea8ebd',  // startup/unicorn business
+  1101: 'photo-1558618666-fcd25c85f82e',  // public speaking presentation
+  1041: 'photo-1552664730-d307ca884978',  // coaching small group
+  1115: 'photo-1553877522-43269d4ea984',  // startup funding vibe
+  1110: 'photo-1540575467063-178a50c2df87', // tech conference
+  1102: 'photo-1505373877841-8d25f7d46678', // panel discussion
+  1123: 'photo-1524178232363-1fb2b075b655', // classroom learning
+  // Nova Stories
+  974:  'photo-1529156069898-49953e39b3ac', // friends group storytelling
+  // Meetup — group networking, socializing
+  1047: 'photo-1528605248644-14dd04022da1', // group dinner cheers
+  998:  'photo-1511578314322-379afb476865', // crowd at event
+  1109: 'photo-1515187029135-18ee286d815b', // people in workshop discussion
+  1138: 'photo-1556761175-5973dc0f32e7', // video call networking
+  // Nova Session — educational, campus
+  1099: 'photo-1577896851231-70ef18881571', // seminar campus
+  960:  'photo-1587825140708-dfaf18c4e236', // academic hall people
+  // Weekend — running, outdoor, art, culture
+  1016: 'photo-1552674605-db6ffd4facb5',  // group running
+  1100: 'photo-1536924940564-58f3ceab5568', // art gallery people
+  1017: 'photo-1571008887538-b36bb32f4571', // people running together
+  1018: 'photo-1461896836934-bd45ba27ee5f', // runners in park
+  1019: 'photo-1476480862126-209bfaa8edc8', // morning run group
+  1020: 'photo-1486218119243-13883505764c', // running along river
+  // Padel Event
+  990:  'photo-1554068865-24cecd4e34b8',  // racquet sport court
+  // Dine out — restaurant, people eating
+  1076: 'photo-1555396273-367ea4eb4db5',  // restaurant group dining
+  1071: 'photo-1592861956120-e524fc739696', // dinner table with friends
+  // Senior Dine Out — upscale dining
+  1060: 'photo-1550966871-3ed3cdb51f3a',  // elegant aperitif setting
+  1095: 'photo-1559339352-11d035aa65de',  // fine dining group
+  // Other — varied events
+  1090: 'photo-1556761175-b413da4baf72',  // business conference people
+  1092: 'photo-1545232979-8bf68ee9b1af',  // bowling night
+  1140: 'photo-1555992828-ca4dbe41d294',  // cultural tour group
+  1133: 'photo-1506905925346-21bda4d32df4'  // leadership gathering
 };
 
 function getEventImage(ev) {
-  const titleLower = ev.title.toLowerCase();
-
-  // Check keyword rules in order
-  for (const rule of KEYWORD_RULES) {
-    for (const kw of rule.keywords) {
-      if (titleLower.includes(kw)) {
-        const imgs = rule.images;
-        const photo = imgs[ev.id % imgs.length];
-        return `https://images.unsplash.com/${photo}?w=600&h=340&fit=crop&q=80`;
-      }
-    }
-  }
-
-  // Fallback to event_type
-  const typeImgs = TYPE_IMAGES[ev.event_type] || TYPE_IMAGES['Other'];
-  const photo = typeImgs[ev.id % typeImgs.length];
+  const photo = EVENT_IMAGES[ev.id] || 'photo-1511578314322-379afb476865';
   return `https://images.unsplash.com/${photo}?w=600&h=340&fit=crop&q=80`;
 }
 
