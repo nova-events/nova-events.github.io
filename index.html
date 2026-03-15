@@ -478,80 +478,67 @@ const EVENTS = [
   {"id":1133,"title":"Future Leaders | Schwarzman Scholars, Milan","format":"ON_SITE","start_date":"2026-05-28T05:00:00Z","top_rated":false,"location":"Milan","few_tickets_left":false,"public_link":"https://app.novatalent.com/events/1133","event_type":"Other"}
 ];
 
-/* ── Image system: 55 unique photos, one per event ── */
+/* ── Image system: real event photos from Nova ── */
 const EVENT_IMAGES = {
-  // C-Level Dinners — elegant dining, people at dinner tables
-  1084: 'photo-1414235077428-338989a2e8c0', // elegant dinner setting
-  995:  'photo-1559339352-11d035aa65de',  // fine dining table
-  970:  'photo-1544148103-0773bf10d330',  // upscale restaurant people
-  1117: 'photo-1550966871-3ed3cdb51f3a',  // candlelit dinner
-  1088: 'photo-1466978913421-dad2ebd01d17', // dinner party group
-  1083: 'photo-1517248135467-4c7edcad34c4', // restaurant ambiance
-  1021: 'photo-1507003211169-0a1dd7228f2d', // business dinner setting
-  1087: 'photo-1560439514-4e9645039924',  // formal event people
-  1114: 'photo-1600891964092-4316c288032e', // business people dining
-  // C-Level Talks — speakers, audiences, panels
-  1085: 'photo-1475721027785-f74eccf877e2', // speaker on stage
-  1104: 'photo-1591115765373-5207764f72e7', // conference audience
-  // Afterwork — people socializing, drinks, bars, smiling groups
-  1103: 'photo-1543007630-9710e4a00a20',  // friends at bar laughing
-  965:  'photo-1575444758702-4a6b9222c016', // cocktails social group
-  1025: 'photo-1530103862676-de8c9debad1d', // people cheering with drinks
-  1116: 'photo-1519671482749-fd09be7ccebf', // friends clinking glasses
-  1105: 'photo-1516450360452-9312f5e86fc7', // karaoke fun people
-  1121: 'photo-1528495612343-9ca9f4a4de28', // rooftop bar social
-  1108: 'photo-1513558161293-cdaf765ed2fd', // wine bar people chatting
-  1091: 'photo-1595590424283-b8f17842773f', // clay shooting sport
-  1120: 'photo-1566417713940-fe7c737a9ef2', // evening drinks group
-  1075: 'photo-1470225620780-dba8ba36b745', // social gathering drinks
-  972:  'photo-1551024709-8f23befc6f87',  // craft cocktail bar
-  1119: 'photo-1571204829887-3b8d69e4094d', // friends toasting wine
-  1089: 'photo-1527529482837-4698179dc6ce', // pub with people socializing
-  1074: 'photo-1572116469696-31de0f17cc34', // neon cocktail bar
-  1094: 'photo-1574391884720-bbc3740c59d1', // group at bar counter
-  // Nova Knowledge — conferences, workshops, learning
-  1131: 'photo-1559136555-9303baea8ebd',  // startup/unicorn business
-  1101: 'photo-1558618666-fcd25c85f82e',  // public speaking presentation
-  1041: 'photo-1552664730-d307ca884978',  // coaching small group
-  1115: 'photo-1553877522-43269d4ea984',  // startup funding vibe
-  1110: 'photo-1540575467063-178a50c2df87', // tech conference
-  1102: 'photo-1505373877841-8d25f7d46678', // panel discussion
-  1123: 'photo-1524178232363-1fb2b075b655', // classroom learning
-  // Nova Stories
-  974:  'photo-1529156069898-49953e39b3ac', // friends group storytelling
-  // Meetup — group networking, socializing
-  1047: 'photo-1528605248644-14dd04022da1', // group dinner cheers
-  998:  'photo-1511578314322-379afb476865', // crowd at event
-  1109: 'photo-1515187029135-18ee286d815b', // people in workshop discussion
-  1138: 'photo-1556761175-5973dc0f32e7', // video call networking
-  // Nova Session — educational, campus
-  1099: 'photo-1577896851231-70ef18881571', // seminar campus
-  960:  'photo-1587825140708-dfaf18c4e236', // academic hall people
-  // Weekend — running, outdoor, art, culture
-  1016: 'photo-1552674605-db6ffd4facb5',  // group running
-  1100: 'photo-1536924940564-58f3ceab5568', // art gallery people
-  1017: 'photo-1571008887538-b36bb32f4571', // people running together
-  1018: 'photo-1461896836934-bd45ba27ee5f', // runners in park
-  1019: 'photo-1476480862126-209bfaa8edc8', // morning run group
-  1020: 'photo-1486218119243-13883505764c', // running along river
-  // Padel Event
-  990:  'photo-1554068865-24cecd4e34b8',  // racquet sport court
-  // Dine out — restaurant, people eating
-  1076: 'photo-1555396273-367ea4eb4db5',  // restaurant group dining
-  1071: 'photo-1592861956120-e524fc739696', // dinner table with friends
-  // Senior Dine Out — upscale dining
-  1060: 'photo-1550966871-3ed3cdb51f3a',  // elegant aperitif setting
-  1095: 'photo-1559339352-11d035aa65de',  // fine dining group
-  // Other — varied events
-  1090: 'photo-1556761175-b413da4baf72',  // business conference people
-  1092: 'photo-1545232979-8bf68ee9b1af',  // bowling night
-  1140: 'photo-1555992828-ca4dbe41d294',  // cultural tour group
-  1133: 'photo-1506905925346-21bda4d32df4'  // leadership gathering
+  1084: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5ec849ee8749fd7421c7b209b145fa521ac858299cd11dd0b70ecee1c1a89f2e1f645dd7ef4889765f0dc58b5e061936c',
+  1103: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf578aac62578356ba6aae45c09238318d9f0f7b1eb7c19d5be3b94bd845fc93056b9cbc561f1b758eb52ccbdbba870853b',
+  965:  'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5ebabfdb8ec53e4ef5693f81f808c4c6da91e97726c7d155bd3c1f99b72e74ebbd01c7c9919a19c9ffd93c63f7fe405ef',
+  995:  'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5dd9ea3b5ad8d6195138c75560774fc2a016c807d83d543d58a765818a83ded8687ba6e51d704ff63fdcb3cf5f46fda74',
+  1131: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5522449a8412bc4b8a8ed3c5ecf708fb100f5740db4335273e749f3015e09b59313ac1e21e48e445a9cdaa9290851b8ce',
+  1025: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5d5c4bdfa7b2dfebf26d6572a6cc23562262037b887a47afffebf32a72e4a41db1b1e980a223a60ab10a0d7d327ed6456',
+  1116: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf595047d3eafbc994a9f2d8d7c28352e863a6f60d2b6155fc7f305bc692b3bbf4616b541e6760533b92edf6c819cdd7ae9',
+  1101: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf599aed3d5234caefb525c9e12d2cbf21bb6c9d1da0e2b0e1e2e76a9dccfb0e3565141c0cb9fb2da5a9cb6fded346d57f8',
+  1105: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf54e7ce05eebcd51edfbce0860417615154c323d97cb9f0984f74221e5e5ce3b719d45def56daed1e8dd16b3b905b7c4a4',
+  970:  'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5c6d0d7428b6777c573a110d664f21aee5e909f8afffc50de21d3863e69fd4b66c9054156564f37c16c5de2907a907876',
+  1121: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5a7fd0a2a951b346bccca4068b879c1b1941f860bdacbbef4dcfa894e3d40efe2057b7b6c0228538dbc37b89078262227',
+  1090: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf525252191a34c750026bd06fe6224784afb3d09e858be3160bf79dd3f9eeca2c49b7156db5757234d7a10674d48b5798d',
+  1047: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf596dcd2126b1ce7618fde12938a3c3148a6691a75add2880d2e641146b0ed2b622ec9be913228d4306d39901a995ac130',
+  974:  'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf595caf87cc3190c0ff326f20370d866f6aa0809916bd3f3339a84751b99adf047ff8d1be2027a6a661f641a6e9f3ed96c',
+  1041: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf552ebf371f176bbf313f6a24c09f82cb18c76a95a9525307b6c9b33ae02af997980fca6797095ca1a4aa29713a360c6d1',
+  1115: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf585a09fcfaa065e072273efe21c4be1b1411beb254c4497ab70a8de070c1b127e2883b8a57e2a46b2d1e4be2e4796ea0d',
+  1099: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf573f727987242fbd05351d441bc043819550a6bb431e0517e60802eafff07a4fa861a15df68eae56483d9bb2ecaac5b6f',
+  990:  'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf525e49389972fa6384533913830bcb08108aca7388a2c499ac09ab9970b70ac0ecf0c0854f41e70cc4f5b79151822eb62',
+  1016: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5cdcb33c9c20272605b5df7c3f1ae5d7087eedfb508b84840157284d4b4838f278f614e3792ef00fa9c86edf15aa65253',
+  1117: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5ca27040d8ebcd7bfc75c13658c063e11deeb3c1979441ee529bdf9f684c019d33179b8692957c4b112ba2ce7f0cec6e7',
+  1110: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5f5d49d584b63d35644670da35ed4f4cc2367f7a5c465cbd956eeb3f84ff8a2c8c70e2099954aa7f0ee45c582610ee60c',
+  1102: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5176c3c9c71538d8a28f15a06a3631ff32526af395b7a3beeae6c747eb78b2a5a348a61c31316c6b4917967958623b8f0',
+  998:  'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf501a0c9b8cde2c05e8ddca558efe31ccfb35fd571901f7c7004da72112c02ef04729222168573a88c0b1f186498d0cd71',
+  1085: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf58855438323683d08d0270e67b8d02c8a03f9e212da31b5abf68b48d6f7e6c1f3d90d5115e36717c87a6d4fa4546ebdc4',
+  1076: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf58350fb9a8fa2de082ddedabd523dd73cc78f9751afc08f00bb03db31d9f313774faa158487a3a1ab1c1d7aa840092767d0538c47132f5b8026502cb54a03f09d',
+  1092: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5501c9f45c1b64c333680fdef0dba43ed1c91b187886dd642ec6cc9ffc819dd7ef27eeb4557bde364f5d85ec0da0529b9',
+  1108: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5d5c21c781907f305493324da6a0cc36819e7c4bdf712744cf3594b6f9f3c6b8117eaaebdd186204c2efb89f81ddcfe09',
+  1140: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf540c8ea22e03fe4a206ca7c53645d1008367826097f2a8eb43d407cfc1cde44f3a94063b09c2cdda550ee6df4f3a06c83d6d90789f4c53b9316dcaaf015ff99d4',
+  1100: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5f573934aa7a549319e335791b9af295147258f0ea822d34ab3573dcf66091adac0a0da68cbee874ad5999da86a54f9aa',
+  1017: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf57c335da78757b178f3f41f17a7fa2b0b3c18dc33fd680eb5c7f19029a4bbafcd6a5e659a1dad458706ed514fe3935dfe',
+  1109: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5cacc205363cdc39e62fb0cc00d0121fc7eb5dc2a7d1a3034dfa844bf623c7ad5c067166fe20823d5033d27f60ea77c4f',
+  1091: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5fe22419a6bbc92bf25c4b6dc63c57778449efb03e0193fae2d26655618d0f32d75b73023540ab9fb87aa4926b68688e5b588d044772e34b167f9e2cc6478318d',
+  1018: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5647c36d5c03b0846bd29deca89b9f14affbce2d20672ed6b6f71fa5f4a2ff32bc27a1a5a2c502084d7adcceebcdf40dc',
+  1019: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf56c08bf1305b1f273a1f78c90f4467a46d8ca0a7278670b67e7cb4e81434c4ed2edfe003eee1fd532bc0029fb80cf9ac7',
+  1020: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5f7f9a4ffadd2ad021e29d916ca4358535e657c54cbaa39f1dffc433087f8a5616e598ce381267bb7a8ce4bfcfea07bfc',
+  1060: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf59b17c3445837a0febf56c43adf798fb6f50fc64496c462c80a22dda38246060438f3e9f48a384178675793a3e12e41bd',
+  1088: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5cfa271add7593604fbaedb2f699063c6c5987f745053c9b5a0fd5dd93892d86287923d455e2bf05f4fff684bc19df0d6',
+  1120: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5ad998ef004390ee8a1516245b6c4cf50c19af625c7c00ffb021af058306c7e6878c94840cbad92e2b938d2c44d955090',
+  1083: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf57ac866757a695011054af579a7b63b5ab61131573c881a94d6f58215bbceecb7b549d19c9d51004a204156b42dd8629a',
+  1075: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf589301079f8e3ad3571f9f2241908c6f20ae5e5d3099bf80f93a1d63add0f65976b95a4a91d5d87cf9f05e97a1aa1ea79',
+  1123: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf54223843298220b6e257696521efdcb8f406b44578bd595bdedf5a21afdddec1c176f374b31206ec1673b277859bcfce5',
+  972:  'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5f4ddd755e904570d7c6c7b63915bcd5abb79686ba8f10e1a20414d2bbfcc45077660b8d2115eeb657976d34fcf8c13ed',
+  1119: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf595346d49bb74f775d1d2dcf2fdc13f37509981a8e57857dfd0f7baee7d7413cafa47ae7512c67b815e0f3820b2495c9e',
+  1089: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5fdb1d3a28212f128fc9391a6b086e3d2a5441cadc0d62576a280ca9ff544e4826990d1976384a7b16a2c22cf9817215d',
+  1138: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5dee9d5e2ad20e617f19c4156704cc87860fb18b92c809e6fab68c3a4b8b566587036f97731f3a7b11220b2c58a22a5c1',
+  1021: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf537540f97d0ef86412935c1e32f869b49cd27114fc023a4e4251a5ff7910bfad52129a02d94dee797fdabb32e3ab3141a',
+  1087: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf54668ec7fd71120d6d651564d03254af2ee17027cafa7055c32f2d7bdb884cd539798b83d77cd25370e0c1edec67ca9ba',
+  1114: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5d216eccf76de34eb629633f46d52ac824620f0cfb2060064ea93212d9398da527d71f562bb287dd42c5a8e2bab5aa120',
+  1104: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf51761153244aaa05219b933f0d63e63345b85d0fe0d18d4b509b0761da95391fd10c837b6cb822614c6f138531f2166e9',
+  1071: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf56b88eca2ddd1e039fb2629d55dbb89a27bcfaf2c722a7030aac2685268b2fe74d803dafeecb89202224b9978fc01240b',
+  960:  'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf573709127bfb85db997f48ed3a646409617e21ca679339e8e134d26e1ab8507a4a9a972bd9217bd17d264bf35187c18f2',
+  1095: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf514756a1cb78f5294e5f606fd48df9df1b0f5314d98b27c039a9eca1fde2ed0440eec5c88ee669aafc6eaf17a1509e3dfc10ccca2aa792fd45e038b152aeb9099',
+  1074: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf52c4c744d180bc32f799a24b48632045ecc6b857827a719600b8016a03388403b1a5745ef5c0abd6ab008fa021fc24f42',
+  1094: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf544b383590e32faad740125d8ae995127644e230dcfc6afe21990fbdeeb1deffa76da41c3ff4c659fbf0b50e815f98a25',
+  1133: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5d45943e542b5987c6542443a6965f3f57a493e1a9aad4e9990ef9a948335915378e7205e56018860356fdb31092889be'
 };
 
 function getEventImage(ev) {
-  const photo = EVENT_IMAGES[ev.id] || 'photo-1511578314322-379afb476865';
-  return `https://images.unsplash.com/${photo}?w=600&h=340&fit=crop&q=80`;
+  return EVENT_IMAGES[ev.id] || '';
 }
 
 function formatDate(iso) {
