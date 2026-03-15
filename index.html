@@ -556,10 +556,33 @@ function formatLabel(f) {
 /* ── Build filter checkboxes ── */
 const eventTypes = [...new Set(EVENTS.map(e => e.event_type))].sort();
 const dropdown = document.getElementById('filterDropdown');
+// "Select All" option
+const selectAllLbl = document.createElement('label');
+selectAllLbl.style.borderBottom = '1px solid rgba(255,255,255,0.08)';
+selectAllLbl.style.marginBottom = '4px';
+selectAllLbl.style.paddingBottom = '10px';
+selectAllLbl.innerHTML = `<input type="checkbox" id="selectAll" checked> Select All`;
+dropdown.appendChild(selectAllLbl);
+
 eventTypes.forEach(t => {
   const lbl = document.createElement('label');
-  lbl.innerHTML = `<input type="checkbox" value="${t}" checked> ${t}`;
+  lbl.innerHTML = `<input type="checkbox" class="type-cb" value="${t}" checked> ${t}`;
   dropdown.appendChild(lbl);
+});
+
+const selectAllCb = document.getElementById('selectAll');
+const typeCbs = () => dropdown.querySelectorAll('.type-cb');
+
+selectAllCb.addEventListener('change', () => {
+  typeCbs().forEach(cb => cb.checked = selectAllCb.checked);
+  render();
+});
+
+dropdown.addEventListener('change', (e) => {
+  if (e.target.classList.contains('type-cb')) {
+    const all = typeCbs();
+    selectAllCb.checked = [...all].every(cb => cb.checked);
+  }
 });
 
 /* ── Render ── */
@@ -569,7 +592,7 @@ const searchInput = document.getElementById('searchInput');
 const filterBtn = document.getElementById('filterBtn');
 
 function getSelectedTypes() {
-  return [...dropdown.querySelectorAll('input:checked')].map(c => c.value);
+  return [...dropdown.querySelectorAll('.type-cb:checked')].map(c => c.value);
 }
 
 function render() {
