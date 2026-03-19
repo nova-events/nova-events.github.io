@@ -344,6 +344,28 @@
       border-radius: 6px;
     }
 
+    .badge-members {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #D4A017;
+      background: rgba(212,160,23,0.12);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .badge-public {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--nova-text-secondary);
+      background: rgba(255,255,255,0.06);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
     .card-title {
       font-family: 'DM Sans', sans-serif;
       font-size: 1rem;
@@ -474,6 +496,9 @@ const EVENTS = [
   {"id": 1094, "title": "May Afterwork | London", "format": "ON_SITE", "start_date": "2026-05-26T18:00:00Z", "top_rated": false, "location": "London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1094", "event_type": "Afterwork"},
   {"id": 1133, "title": "Future Leaders | Schwarzman Scholars, Milan", "format": "ON_SITE", "start_date": "2026-05-28T05:00:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1133", "event_type": "Other"}
 ];
+
+/* ── Public events (listed on Luma) ── */
+const PUBLIC_EVENT_IDS = new Set([1121, 974, 990, 998, 1092, 1025, 1140, 1109, 1088, 1075, 1123, 1089]);
 
 /* ── Image system: real event photos from Nova ── */
 const EVENT_IMAGES = {
@@ -612,10 +637,14 @@ function render() {
   grid.innerHTML = filtered.map(ev => {
     const img = getEventImage(ev);
     const loc = ev.location || 'Online';
-    let badges = `<span class="badge-type">${ev.event_type}</span>`;
+    let badges = '';
+    if (PUBLIC_EVENT_IDS.has(ev.id)) {
+      badges += '<span class="badge-public">Public Event</span>';
+    } else {
+      badges += '<span class="badge-members">Members Only</span>';
+    }
     if (ev.top_rated) badges += '<span class="badge-top">Top Rated</span>';
     if (ev.few_tickets_left) badges += '<span class="badge-few">Few tickets left</span>';
-    if (ev.format !== 'ON_SITE') badges += `<span class="badge-format">${formatLabel(ev.format)}</span>`;
 
     return `<a class="card-link" href="${ev.public_link}" target="_blank" rel="noopener">
       <div class="card-img-wrap">
