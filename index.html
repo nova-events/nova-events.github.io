@@ -480,6 +480,7 @@
     </div>
     <h1>A sneak peek at what's coming</h1>
     <p class="subtitle">These are some of our curated gatherings where you could connect with inspiring professionals.</p>
+    <p class="subtitle" style="font-size:0.85rem; margin-top:-24px; color:rgba(155,163,174,0.7);">Curious about Nova? Join one of our guest-friendly events and see what it's like.</p>
 
     <div class="controls">
       <div class="search-box">
@@ -488,7 +489,7 @@
       </div>
       <div class="toggle-wrap" id="publicToggle">
         <div class="toggle-switch"></div>
-        <span>Only public events</span>
+        <span>Open to non-members</span>
       </div>
       <div class="filter-wrap">
         <button class="filter-btn" id="filterBtn">
@@ -726,7 +727,7 @@ function render() {
     const loc = ev.location || 'Online';
     let badges = '';
     if (PUBLIC_EVENT_IDS.has(ev.id)) {
-      badges += '<span class="badge-public">Public Event</span>';
+      badges += '<span class="badge-public">Try Nova</span>';
     } else {
       badges += '<span class="badge-members">Members Only</span>';
     }
