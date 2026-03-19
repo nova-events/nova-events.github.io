@@ -408,6 +408,64 @@
       font-size: 0.95rem;
     }
 
+    /* Toggle public */
+    .toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      background: var(--nova-bg-secondary);
+      border: 1px solid var(--nova-border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      user-select: none;
+      transition: border-color 0.2s;
+      white-space: nowrap;
+    }
+
+    .toggle-wrap:hover { border-color: var(--nova-accent); }
+    .toggle-wrap.active { border-color: var(--nova-accent); }
+
+    .toggle-wrap span {
+      font-size: 0.9rem;
+      font-family: 'Open Sans', sans-serif;
+      color: var(--nova-text-secondary);
+      transition: color 0.2s;
+    }
+
+    .toggle-wrap.active span { color: var(--nova-text-primary); }
+
+    .toggle-switch {
+      width: 36px;
+      height: 20px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      position: relative;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: var(--nova-text-secondary);
+      border-radius: 50%;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .toggle-wrap.active .toggle-switch {
+      background: rgba(14,176,164,0.3);
+    }
+
+    .toggle-wrap.active .toggle-switch::after {
+      transform: translateX(16px);
+      background: var(--nova-accent);
+    }
+
     /* Scrollbar */
     .filter-dropdown::-webkit-scrollbar { width: 6px; }
     .filter-dropdown::-webkit-scrollbar-track { background: transparent; }
@@ -427,6 +485,10 @@
       <div class="search-box">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
         <input type="text" id="searchInput" placeholder="Search by title, location or type...">
+      </div>
+      <div class="toggle-wrap" id="publicToggle">
+        <div class="toggle-switch"></div>
+        <span>Only public events</span>
       </div>
       <div class="filter-wrap">
         <button class="filter-btn" id="filterBtn">
@@ -604,6 +666,15 @@ dropdown.addEventListener('change', (e) => {
   }
 });
 
+/* ── Public toggle ── */
+const publicToggle = document.getElementById('publicToggle');
+let onlyPublic = false;
+publicToggle.addEventListener('click', () => {
+  onlyPublic = !onlyPublic;
+  publicToggle.classList.toggle('active', onlyPublic);
+  render();
+});
+
 /* ── Render ── */
 const grid = document.getElementById('eventsGrid');
 const countEl = document.getElementById('eventCount');
@@ -620,6 +691,7 @@ function render() {
 
   const filtered = EVENTS.filter(ev => {
     if (!types.includes(ev.event_type)) return false;
+    if (onlyPublic && !PUBLIC_EVENT_IDS.has(ev.id)) return false;
     if (q) {
       const hay = (ev.title + ' ' + ev.location + ' ' + ev.event_type).toLowerCase();
       return hay.includes(q);
