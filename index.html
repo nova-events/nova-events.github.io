@@ -471,6 +471,72 @@
     .filter-dropdown::-webkit-scrollbar-track { background: transparent; }
     .filter-dropdown::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
     .filter-dropdown::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+    /* Past events section */
+    .past-section {
+      margin-bottom: 32px;
+    }
+
+    .past-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: var(--nova-bg-secondary);
+      border: 1px solid var(--nova-border);
+      border-radius: var(--radius);
+      color: var(--nova-text-secondary);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .past-toggle:hover {
+      border-color: var(--nova-accent);
+      color: var(--nova-text-primary);
+    }
+
+    .past-toggle.open {
+      border-color: var(--nova-accent);
+      color: var(--nova-text-primary);
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .past-toggle svg {
+      width: 18px;
+      height: 18px;
+      transition: transform 0.3s;
+      flex-shrink: 0;
+    }
+
+    .past-toggle.open svg {
+      transform: rotate(180deg);
+    }
+
+    .past-content {
+      border: 1px solid var(--nova-border);
+      border-top: none;
+      border-radius: 0 0 var(--radius) var(--radius);
+      padding: 20px;
+      display: none;
+    }
+
+    .past-content.show {
+      display: block;
+    }
+
+    .past-content .card-img-wrap img {
+      filter: grayscale(100%);
+      transition: transform 0.4s, filter 0.4s;
+    }
+
+    .past-content a.card-link:hover .card-img-wrap img {
+      filter: grayscale(60%);
+      transform: scale(1.06);
+    }
   </style>
 </head>
 <body>
@@ -500,21 +566,28 @@
       </div>
     </div>
 
+    <div class="past-section">
+      <button class="past-toggle" id="pastToggle">
+        <span>Check some of our past events</span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+      </button>
+      <div class="past-content" id="pastContent">
+        <p class="event-count" id="pastEventCount"></p>
+        <div class="grid" id="pastEventsGrid"></div>
+      </div>
+    </div>
+
     <p class="event-count" id="eventCount"></p>
     <div class="grid" id="eventsGrid"></div>
   </div>
 
 <script>
 const EVENTS = [
-  {"id": 1170, "title": "Nova Knowledge: Building a Product in 1 Week with AI (Demo) | Online", "format": "ONLINE", "start_date": "2026-03-31T16:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1170", "event_type": "Nova Knowledge"},
-  {"id": 1154, "title": "March Afterwork | Rome", "format": "ON_SITE", "start_date": "2026-03-31T17:00:00Z", "top_rated": true, "location": "Rome", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1154", "event_type": "Afterwork"},
-  {"id": 1109, "title": "Nova Symposium: Thinking together | Madrid", "format": "ON_SITE", "start_date": "2026-03-31T17:30:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1109", "event_type": "Meetup"},
-  {"id": 1018, "title": "The Clubhouse's Long Run XII | London", "format": "ON_SITE", "start_date": "2026-04-05T06:45:00Z", "top_rated": false, "location": "SW15 1LB, London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1018", "event_type": "Weekend"},
   {"id": 1145, "title": "Nova Knowledge: Building a company totally managed by AI Agents | Online", "format": "ONLINE", "start_date": "2026-04-07T17:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1145", "event_type": "Nova Knowledge"},
   {"id": 1060, "title": "Exclusive Aperitif 30+ @White Rabbit Speakeasy | Milan", "format": "ON_SITE", "start_date": "2026-04-08T17:00:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1060", "event_type": "Senior Dine Out"},
-  {"id": 1088, "title": "Nova Knowledge | Simon Pellas (Monument Bank) & Tim Backstrom (PPRO) | London", "format": "ON_SITE", "start_date": "2026-04-08T17:30:00Z", "top_rated": true, "location": "London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1088", "event_type": "C-Level Dinner"},
+  {"id": 1088, "title": "Nova Knowledge | Fintech x Chief of Staff | London", "format": "ON_SITE", "start_date": "2026-04-08T17:30:00Z", "top_rated": true, "location": "London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1088", "event_type": "C-Level Dinner"},
   {"id": 1159, "title": "C-Level Dinner: Alberto Rodríguez-Toquero (Mahou San Miguel) | Madrid", "format": "ON_SITE", "start_date": "2026-04-08T18:00:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1159", "event_type": "C-Level Dinner"},
-  {"id": 1151, "title": "April Afterwork | Zurich", "format": "ON_SITE", "start_date": "2026-04-09T16:30:00Z", "top_rated": false, "location": "Zurich", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1151", "event_type": "Afterwork"},
+  {"id": 1151, "title": "April Afterwork | Zurich", "format": "ON_SITE", "start_date": "2026-04-09T16:30:00Z", "top_rated": false, "location": "Zurich", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1151", "event_type": "Afterwork"},
   {"id": 1167, "title": "Nova Knowledge: Manage your day to day tasks with OpenClaw | Online", "format": "ONLINE", "start_date": "2026-04-09T17:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1167", "event_type": "Nova Knowledge"},
   {"id": 1120, "title": "April Afterwork | Madrid", "format": "ON_SITE", "start_date": "2026-04-09T18:00:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1120", "event_type": "Afterwork"},
   {"id": 1019, "title": "The Clubhouse's Long Run XIII | London", "format": "ON_SITE", "start_date": "2026-04-12T06:45:00Z", "top_rated": false, "location": "SW15 1LB, London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1019", "event_type": "Weekend"},
@@ -532,28 +605,192 @@ const EVENTS = [
   {"id": 1176, "title": "Walk & Talk | Rome", "format": "ON_SITE", "start_date": "2026-04-18T09:00:00Z", "top_rated": false, "location": "Rome", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1176", "event_type": "Other"},
   {"id": 1107, "title": "XIII Nova Padel Open | Madrid", "format": "ON_SITE", "start_date": "2026-04-18T15:00:00Z", "top_rated": true, "location": "Madrid, Spain", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1107", "event_type": "Padel Event"},
   {"id": 1020, "title": "The Clubhouse's Long Run XIV | London", "format": "ON_SITE", "start_date": "2026-04-19T06:45:00Z", "top_rated": false, "location": "SW15 1LB, London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1020", "event_type": "Weekend"},
-  {"id": 1160, "title": "April Afterwork | Copenhagen", "format": "ON_SITE", "start_date": "2026-04-21T17:00:00Z", "top_rated": true, "location": "Copenhagen", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1160", "event_type": "Afterwork"},
+  {"id": 1187, "title": "CEO Talk: Jonas Jonsson (4C Strategies) | Stockholm", "format": "ON_SITE", "start_date": "2026-04-20T15:30:00Z", "top_rated": false, "location": "Stockholm", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1187", "event_type": "C-Level Talks"},
   {"id": 1138, "title": "Marketing | Global Speed Networking Online", "format": "ONLINE", "start_date": "2026-04-21T17:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1138", "event_type": "Meetup"},
-  {"id": 1180, "title": "C-Level Dinner: Guess the Guest (MC Donald’s) | Milan", "format": "ON_SITE", "start_date": "2026-04-21T18:30:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1180", "event_type": "C-Level Dinner"},
+  {"id": 1160, "title": "April Afterwork | Copenhagen", "format": "ON_SITE", "start_date": "2026-04-21T17:00:00Z", "top_rated": true, "location": "Copenhagen", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1160", "event_type": "Afterwork"},
+  {"id": 1180, "title": "C-Level Dinner: Valeria Casani (MC Donald’s) | Milan", "format": "ON_SITE", "start_date": "2026-04-21T18:30:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1180", "event_type": "C-Level Dinner"},
   {"id": 1175, "title": "Investments, PE & VC | Global Speed Networking Online", "format": "ONLINE", "start_date": "2026-04-22T11:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1175", "event_type": "Meetup"},
-  {"id": 1173, "title": "ESCP Experts - Agrifood Tech: Food is Geopolitics. And maybe we haven't figured it out yet.", "format": "ONLINE", "start_date": "2026-04-22T16:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1173", "event_type": "Other"},
-  {"id": 1050, "title": "April Happy Hour | Munich", "format": "ON_SITE", "start_date": "2026-04-22T16:30:00Z", "top_rated": false, "location": "Munich", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1050", "event_type": "Meetup"},
-  {"id": 1142, "title": "C-Level Dinner: Per Grape | Stockholm", "format": "ON_SITE", "start_date": "2026-04-22T16:30:00Z", "top_rated": true, "location": "Stockholm", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1142", "event_type": "C-Level Dinner"},
+  {"id": 1173, "title": "ESCP Experts - Agrifood Tech: Food is Geopolitics. And maybe we haven't figured it out yet. ", "format": "ONLINE", "start_date": "2026-04-22T16:00:00Z", "top_rated": true, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1173", "event_type": "Other"},
   {"id": 1021, "title": "CEO Dinner: Markus Sieger (Polpharma) | Zurich", "format": "ON_SITE", "start_date": "2026-04-22T16:30:00Z", "top_rated": false, "location": "Zurich", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1021", "event_type": "C-Level Dinner"},
+  {"id": 1050, "title": "April Happy Hour | Munich", "format": "ON_SITE", "start_date": "2026-04-22T16:30:00Z", "top_rated": false, "location": "Munich", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1050", "event_type": "Meetup"},
+  {"id": 1142, "title": "C-Level Dinner: Per Grape | Stockholm ", "format": "ON_SITE", "start_date": "2026-04-22T16:30:00Z", "top_rated": true, "location": "Stockholm ", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1142", "event_type": "C-Level Dinner"},
+  {"id": 1197, "title": "Nova Knowledge: Rethinking Climate Finance & Impact Investing | Online", "format": "ONLINE", "start_date": "2026-04-22T17:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1197", "event_type": "Nova Knowledge"},
+  {"id": 1186, "title": "April Afterwork | Padova", "format": "ON_SITE", "start_date": "2026-04-23T05:00:00Z", "top_rated": false, "location": "Padova", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1186", "event_type": "Afterwork"},
   {"id": 1168, "title": "April Afterwork | Stockholm", "format": "ON_SITE", "start_date": "2026-04-23T15:30:00Z", "top_rated": true, "location": "Stockholm", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1168", "event_type": "Afterwork"},
   {"id": 1179, "title": "The Art of the Sales Conversation: A Masterclass with Fran Ávila (Sandler) | Online", "format": "ONLINE", "start_date": "2026-04-23T16:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1179", "event_type": "Nova Knowledge"},
   {"id": 1087, "title": "CEO Dinner: Stas Bichenko (recombine.ai) | London", "format": "ON_SITE", "start_date": "2026-04-23T18:30:00Z", "top_rated": false, "location": "London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1087", "event_type": "C-Level Dinner"},
   {"id": 1114, "title": "C-Level Dinner: Iván Landabaso (JME Ventures) | Barcelona", "format": "ON_SITE", "start_date": "2026-04-28T18:30:00Z", "top_rated": true, "location": "Barcelona, Spain", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1114", "event_type": "C-Level Dinner"},
   {"id": 1104, "title": "C-Level Talk: Fabio Moioli (Spencer Stuart) | Milan", "format": "ON_SITE", "start_date": "2026-04-29T16:45:00Z", "top_rated": true, "location": "Milan", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1104", "event_type": "C-Level Talks"},
-  {"id": 1158, "title": "C-Level Talk: Ignacio Navarro (Diageo) | Madrid (Nova's offices)", "format": "ON_SITE", "start_date": "2026-04-29T17:30:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1158", "event_type": "C-Level Dinner"},
   {"id": 1071, "title": "April Dinner | Geneva", "format": "ON_SITE", "start_date": "2026-04-29T17:30:00Z", "top_rated": false, "location": "Geneva", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1071", "event_type": "Dine out"},
-  {"id": 960, "title": "Nova Event - Chiomenti Academy: Bright Future Program", "format": "HYBRID", "start_date": "2026-05-06T16:00:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/960", "event_type": "Nova Session"},
+  {"id": 1158, "title": "C-Level Talk: Ignacio Navarro (Diageo) | Madrid (Nova's offices)", "format": "ON_SITE", "start_date": "2026-04-29T17:30:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1158", "event_type": "C-Level Dinner"},
+  {"id": 1181, "title": "CEO Talk: Building Leadership Early - Maria Anker Andersen (FLA Leadership) | Online", "format": "ONLINE", "start_date": "2026-04-30T17:00:00Z", "top_rated": true, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1181", "event_type": "C-Level Talks"},
+  {"id": 1191, "title": "Nova Hike: Trees & Beers | Bonn", "format": "ON_SITE", "start_date": "2026-05-01T11:00:00Z", "top_rated": false, "location": "Bonn", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1191", "event_type": "Nova Knowledge"},
+  {"id": 1194, "title": "Nova Knowledge: The 3 Catalysts of Innovation | Online", "format": "ONLINE", "start_date": "2026-05-05T11:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1194", "event_type": "Nova Knowledge"},
+  {"id": 960, "title": "Nova Event - Chiomenti Academy: Bright Future Program ", "format": "HYBRID", "start_date": "2026-05-06T16:00:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/960", "event_type": "Nova Session"},
   {"id": 1095, "title": "Dine & Connect | London", "format": "ON_SITE", "start_date": "2026-05-06T18:45:00Z", "top_rated": false, "location": "London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1095", "event_type": "Senior Dine Out"},
   {"id": 1074, "title": "May Afterwork | Geneva", "format": "ON_SITE", "start_date": "2026-05-12T16:30:00Z", "top_rated": false, "location": "Geneva", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1074", "event_type": "Afterwork"},
+  {"id": 1164, "title": "CEO Dinner: Peter Karlströmer (GN Group) | Copenhagen", "format": "ON_SITE", "start_date": "2026-05-26T16:45:00Z", "top_rated": true, "location": "Copenhagen", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1164", "event_type": "C-Level Dinner"},
   {"id": 1094, "title": "May Afterwork | London", "format": "ON_SITE", "start_date": "2026-05-26T18:00:00Z", "top_rated": false, "location": "London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1094", "event_type": "Afterwork"},
   {"id": 1072, "title": "May Dinner | Geneva", "format": "ON_SITE", "start_date": "2026-05-27T17:30:00Z", "top_rated": false, "location": "Geneva", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1072", "event_type": "Dine out"},
-  {"id": 1133, "title": "Future Leaders | Schwarzman Scholars, Milan", "format": "ON_SITE", "start_date": "2026-05-28T05:00:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1133", "event_type": "Other"},
-  {"id": 1148, "title": "UEFA Final Watch-Party | Johannesburg", "format": "ON_SITE", "start_date": "2026-05-30T16:30:00Z", "top_rated": false, "location": "Johannesburg", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1148", "event_type": "Other"}
+  {"id": 1169, "title": "Nova Knowledge: From Operations to Leadership (Real Business Challenges) | Online", "format": "ONLINE", "start_date": "2026-05-28T17:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1169", "event_type": "Nova Knowledge"},
+  {"id": 1133, "title": "Future Leaders | Schwarzman Scholars, Milan", "format": "ON_SITE", "start_date": "2026-05-28T17:00:00Z", "top_rated": true, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1133", "event_type": "Other"},
+  {"id": 1165, "title": "Nova Reset Retreat | Altea, Spain", "format": "ON_SITE", "start_date": "2026-05-29T14:00:00Z", "top_rated": false, "location": "Alicante", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1165", "event_type": "Wellness Retreat"},
+  {"id": 1148, "title": "UEFA Final Watch-Party | Johannesburg", "format": "ON_SITE", "start_date": "2026-05-30T16:30:00Z", "top_rated": false, "location": "Johannesburg", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1148", "event_type": "Other"},
+  {"id": 1182, "title": "Nova Knowledge: Public Speaking with Susie Ashfield | Online", "format": "ONLINE", "start_date": "2026-06-02T11:00:00Z", "top_rated": false, "location": "London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1182", "event_type": "Nova Knowledge"},
+  {"id": 1185, "title": "Future Leaders | Schwarzman Scholars, Madrid", "format": "ON_SITE", "start_date": "2026-06-04T17:00:00Z", "top_rated": true, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1185", "event_type": "Other"}
+];
+
+const PAST_EVENTS = [
+  {"id": 951, "title": "January Afterwork - Back to School! | Madrid", "format": "ON_SITE", "start_date": "2026-01-08T18:30:00Z", "top_rated": true, "location": "Madrid", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/951", "event_type": "Afterwork"},
+  {"id": 880, "title": "Padel Connect | Turin", "format": "ON_SITE", "start_date": "2026-01-11T09:30:00Z", "top_rated": false, "location": "Turin", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/880", "event_type": "Padel Event"},
+  {"id": 930, "title": "Strategy & Operations | Global Speed Networking Online", "format": "ONLINE", "start_date": "2026-01-13T18:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/930", "event_type": "Meetup"},
+  {"id": 943, "title": "Marketing | Global Speed Networking Online", "format": "ONLINE", "start_date": "2026-01-13T18:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/943", "event_type": "Meetup"},
+  {"id": 884, "title": "CEO Talk: Matteo Sarzana (Airbnb) | Milan", "format": "ON_SITE", "start_date": "2026-01-14T17:45:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/884", "event_type": "C-Level Talks"},
+  {"id": 928, "title": "January Afterwork | Milan", "format": "ON_SITE", "start_date": "2026-01-15T18:00:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/928", "event_type": "Afterwork"},
+  {"id": 696, "title": "Legal Services Spain | Get to know Prophero", "format": "ON_SITE", "start_date": "2026-01-15T18:30:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/696", "event_type": "Afterwork"},
+  {"id": 875, "title": "January Afterwork | Barcelona", "format": "ON_SITE", "start_date": "2026-01-15T18:30:00Z", "top_rated": false, "location": "Barcelona", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/875", "event_type": "Afterwork"},
+  {"id": 939, "title": "January Afterwork & Mini Golf I London", "format": "ON_SITE", "start_date": "2026-01-15T19:00:00Z", "top_rated": false, "location": "London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/939", "event_type": "Afterwork"},
+  {"id": 978, "title": "CEO Talks: New Year Special - Stepping into your next version as a leader | Stockholm", "format": "ON_SITE", "start_date": "2026-01-20T06:30:00Z", "top_rated": false, "location": "Stockholm", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/978", "event_type": "Nova Knowledge"},
+  {"id": 886, "title": "January Afterwork | Copenhagen", "format": "ON_SITE", "start_date": "2026-01-20T18:00:00Z", "top_rated": false, "location": "Copenhagen", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/886", "event_type": "Afterwork"},
+  {"id": 945, "title": "Sales & Business Development | Global Speed Networking Online", "format": "ONLINE", "start_date": "2026-01-20T18:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/945", "event_type": "Meetup"},
+  {"id": 946, "title": "Product | Global Speed Networking Online", "format": "ONLINE", "start_date": "2026-01-20T18:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/946", "event_type": "Meetup"},
+  {"id": 991, "title": "January Afterwork | Geneva", "format": "ON_SITE", "start_date": "2026-01-20T18:00:00Z", "top_rated": false, "location": "Geneva", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/991", "event_type": "Afterwork"},
+  {"id": 952, "title": "C-Level Dinner: Javier Echanove (Be Levels) | Madrid", "format": "ON_SITE", "start_date": "2026-01-20T19:30:00Z", "top_rated": true, "location": "Madrid", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/952", "event_type": "C-Level Dinner"},
+  {"id": 996, "title": "January Happy Hour | New York", "format": "ON_SITE", "start_date": "2026-01-20T22:30:00Z", "top_rated": true, "location": "New York", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/996", "event_type": "Meetup"},
+  {"id": 934, "title": "Marketing Italy Afterwork | Milan", "format": "ON_SITE", "start_date": "2026-01-21T18:00:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/934", "event_type": "Afterwork"},
+  {"id": 855, "title": "Dine & Connect 30+ | London", "format": "ON_SITE", "start_date": "2026-01-21T19:45:00Z", "top_rated": false, "location": "London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/855", "event_type": "Senior Dine Out"},
+  {"id": 937, "title": "January Afterwork - AI | Stockholm ", "format": "ON_SITE", "start_date": "2026-01-22T16:30:00Z", "top_rated": false, "location": "Stockholm", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/937", "event_type": "Afterwork"},
+  {"id": 899, "title": "Cultura de Innovación en Amazon – Working Backwards", "format": "ON_SITE", "start_date": "2026-01-22T16:45:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/899", "event_type": "Other"},
+  {"id": 981, "title": "Nova Knowledge | Leading Experts: We Build Your 2026 Growth Plan Live | Online", "format": "ONLINE", "start_date": "2026-01-22T18:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/981", "event_type": "Nova Knowledge"},
+  {"id": 915, "title": "C-Level Dinner: Josef Brocki (Evolve) | Madrid", "format": "ON_SITE", "start_date": "2026-01-22T20:00:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/915", "event_type": "C-Level Dinner"},
+  {"id": 1008, "title": "The Clubhouse's Long Run II | London", "format": "ON_SITE", "start_date": "2026-01-25T07:45:00Z", "top_rated": false, "location": "SW15 1LB, London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1008", "event_type": "Weekend"},
+  {"id": 877, "title": "CEO Talk: Josefin Sigedal (Affärsvärlden) | Stockholm", "format": "ON_SITE", "start_date": "2026-01-26T16:30:00Z", "top_rated": false, "location": "Stockholm", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/877", "event_type": "C-Level Talks"},
+  {"id": 904, "title": "Hockey Game | Geneva", "format": "ON_SITE", "start_date": "2026-01-26T18:30:00Z", "top_rated": false, "location": "Geneva", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/904", "event_type": "Afterwork"},
+  {"id": 953, "title": "C-Level Dinner: Inês Fonseca (Diageo) | Madrid", "format": "ON_SITE", "start_date": "2026-01-26T19:30:00Z", "top_rated": true, "location": "Madrid", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/953", "event_type": "C-Level Dinner"},
+  {"id": 1002, "title": "Nova Knowledge | Marketing “finance first”: cómo crecer con criterio financiero | Online", "format": "ONLINE", "start_date": "2026-01-27T16:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1002", "event_type": "Nova Knowledge"},
+  {"id": 1026, "title": "Shape the Nova Product Community", "format": "ONLINE", "start_date": "2026-01-28T17:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1026", "event_type": "Meetup"},
+  {"id": 1006, "title": "January Happy Hour | Munich", "format": "ON_SITE", "start_date": "2026-01-28T18:00:00Z", "top_rated": false, "location": "Munich", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1006", "event_type": "Meetup"},
+  {"id": 1029, "title": "January Happy Hour | Rome", "format": "ON_SITE", "start_date": "2026-01-28T18:30:00Z", "top_rated": true, "location": "Rome", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1029", "event_type": "Afterwork"},
+  {"id": 911, "title": "January Afterwork | Amsterdam", "format": "ON_SITE", "start_date": "2026-01-29T17:30:00Z", "top_rated": false, "location": "Amsterdam", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/911", "event_type": "Afterwork"},
+  {"id": 986, "title": "Afterwork | Welcome to Berlin!", "format": "ON_SITE", "start_date": "2026-01-29T18:00:00Z", "top_rated": false, "location": "Berlin", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/986", "event_type": "Afterwork"},
+  {"id": 982, "title": "January Afterwork | Back in Dublin", "format": "ON_SITE", "start_date": "2026-01-29T18:30:00Z", "top_rated": false, "location": "Dublin", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/982", "event_type": "Afterwork"},
+  {"id": 994, "title": "January Afterwork | Paris", "format": "ON_SITE", "start_date": "2026-01-29T18:30:00Z", "top_rated": false, "location": "Paris", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/994", "event_type": "Afterwork"},
+  {"id": 1000, "title": "Investments, PE & VC Spain Afterwork | Madrid", "format": "ON_SITE", "start_date": "2026-01-29T19:00:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1000", "event_type": "Afterwork"},
+  {"id": 924, "title": "Nova Knowledge + Networking: Building a (Stablecoin) Neobank | London", "format": "ON_SITE", "start_date": "2026-01-29T19:00:00Z", "top_rated": false, "location": "London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/924", "event_type": "Nova Knowledge"},
+  {"id": 980, "title": "Volleyball Game | Istanbul", "format": "ON_SITE", "start_date": "2026-01-31T08:00:00Z", "top_rated": true, "location": "Istanbul", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/980", "event_type": "Other"},
+  {"id": 976, "title": "Brunch with Kevin Ferraro | Zurich", "format": "ON_SITE", "start_date": "2026-01-31T09:30:00Z", "top_rated": false, "location": "Zurich", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/976", "event_type": "C-Level Talks"},
+  {"id": 1030, "title": "Run & Gym I | Rome", "format": "ON_SITE", "start_date": "2026-01-31T10:00:00Z", "top_rated": false, "location": "Rome", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1030", "event_type": "Other"},
+  {"id": 1009, "title": "The Clubhouse's Long Run III | London", "format": "ON_SITE", "start_date": "2026-02-01T07:45:00Z", "top_rated": false, "location": "SW15 1LB, London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1009", "event_type": "Weekend"},
+  {"id": 992, "title": "C-Level Dinner: Candice Lamoine (L’Oréal) | Madrid", "format": "ON_SITE", "start_date": "2026-02-02T19:30:00Z", "top_rated": true, "location": "Madrid", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/992", "event_type": "C-Level Dinner"},
+  {"id": 969, "title": "Workshop | Smart Finance for Professional Women | Online", "format": "ONLINE", "start_date": "2026-02-03T18:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/969", "event_type": "Other"},
+  {"id": 1028, "title": "Nova Speed Networking + Afterwork | Naples", "format": "ON_SITE", "start_date": "2026-02-04T18:30:00Z", "top_rated": false, "location": "Naples", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1028", "event_type": "Meetup"},
+  {"id": 941, "title": "February Afterwork | Turin", "format": "ON_SITE", "start_date": "2026-02-04T19:00:00Z", "top_rated": false, "location": "Turin", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/941", "event_type": "Afterwork"},
+  {"id": 1024, "title": "February Afterwork | Padova", "format": "ON_SITE", "start_date": "2026-02-05T17:30:00Z", "top_rated": false, "location": "Padova", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1024", "event_type": "Afterwork"},
+  {"id": 962, "title": "February Afterwork | Barcelona", "format": "ON_SITE", "start_date": "2026-02-05T18:30:00Z", "top_rated": false, "location": "Barcelona", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/962", "event_type": "Afterwork"},
+  {"id": 999, "title": "February Afterwork | Madrid", "format": "ON_SITE", "start_date": "2026-02-05T19:00:00Z", "top_rated": true, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/999", "event_type": "Afterwork"},
+  {"id": 968, "title": "Art & Connect @Gallerie D'Italia | Milan", "format": "ON_SITE", "start_date": "2026-02-07T10:30:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/968", "event_type": "Weekend"},
+  {"id": 859, "title": "Tate Modern - Free Guided Tour I London", "format": "ON_SITE", "start_date": "2026-02-07T12:00:00Z", "top_rated": false, "location": "London", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/859", "event_type": "Other"},
+  {"id": 1010, "title": "The Clubhouse's Long Run IV | London", "format": "ON_SITE", "start_date": "2026-02-08T07:45:00Z", "top_rated": false, "location": "SW15 1LB, London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1010", "event_type": "Weekend"},
+  {"id": 1004, "title": "C-Level Dinner: Alberto Ruiz Gallardón (Ruiz Gallardón Abogados) | Madrid", "format": "ON_SITE", "start_date": "2026-02-09T19:30:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1004", "event_type": "C-Level Dinner"},
+  {"id": 1023, "title": "Dinner X Wolf | Brussels", "format": "ON_SITE", "start_date": "2026-02-10T18:00:00Z", "top_rated": false, "location": "Brussels", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1023", "event_type": "Dine out"},
+  {"id": 997, "title": "February Happy Hour | New York", "format": "ON_SITE", "start_date": "2026-02-10T22:30:00Z", "top_rated": false, "location": "New York", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/997", "event_type": "Meetup"},
+  {"id": 957, "title": "February Afterwork (Pizza&Networking) | Milan", "format": "ON_SITE", "start_date": "2026-02-11T18:00:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/957", "event_type": "Afterwork"},
+  {"id": 1040, "title": "Online Workshop: Build AI Agents End-to-End", "format": "ONLINE", "start_date": "2026-02-12T17:00:00Z", "top_rated": true, "location": "", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1040", "event_type": "Nova Knowledge"},
+  {"id": 1045, "title": "Nova Session | La sostenibilidad que mueve el negocio | Madrid", "format": "ON_SITE", "start_date": "2026-02-12T18:00:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1045", "event_type": "Nova Session"},
+  {"id": 1056, "title": "Lenny’s Newsletter & Nova Product Afterwork | Madrid", "format": "ON_SITE", "start_date": "2026-02-12T18:00:00Z", "top_rated": true, "location": "Madrid", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1056", "event_type": "Afterwork"},
+  {"id": 858, "title": "February Afterwork | London", "format": "ON_SITE", "start_date": "2026-02-12T19:00:00Z", "top_rated": false, "location": "London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/858", "event_type": "Afterwork"},
+  {"id": 958, "title": "February Afterwork | Lisbon", "format": "ON_SITE", "start_date": "2026-02-12T20:30:00Z", "top_rated": false, "location": "Lisbon", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/958", "event_type": "Afterwork"},
+  {"id": 1022, "title": "Ski Trip | Zurich", "format": "ON_SITE", "start_date": "2026-02-14T07:30:00Z", "top_rated": false, "location": "Zurich", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1022", "event_type": "Ski Trip"},
+  {"id": 1011, "title": "The Clubhouse's Long Run V | London", "format": "ON_SITE", "start_date": "2026-02-15T07:45:00Z", "top_rated": false, "location": "SW15 1LB, London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1011", "event_type": "Weekend"},
+  {"id": 988, "title": "C-Level Dinner: Fernando Jáñez (Banco Santander) | Madrid", "format": "ON_SITE", "start_date": "2026-02-16T19:30:00Z", "top_rated": true, "location": "Madrid", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/988", "event_type": "C-Level Dinner"},
+  {"id": 964, "title": "February Afterwork - Creator Economy | Stockholm ", "format": "ON_SITE", "start_date": "2026-02-17T16:00:00Z", "top_rated": false, "location": "Stockholm", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/964", "event_type": "Afterwork"},
+  {"id": 887, "title": "February Afterwork | Copenhagen", "format": "ON_SITE", "start_date": "2026-02-17T18:00:00Z", "top_rated": true, "location": "Copenhagen", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/887", "event_type": "Afterwork"},
+  {"id": 1068, "title": "February Afterwork | Rome", "format": "ON_SITE", "start_date": "2026-02-17T18:30:00Z", "top_rated": true, "location": "Rome", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1068", "event_type": "Afterwork"},
+  {"id": 921, "title": "CEO Dinner: Carla Masperi (SAP) | Milan", "format": "ON_SITE", "start_date": "2026-02-17T19:30:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/921", "event_type": "C-Level Dinner"},
+  {"id": 948, "title": "February Afterwork | Amsterdam", "format": "ON_SITE", "start_date": "2026-02-18T17:30:00Z", "top_rated": false, "location": "Amsterdam", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/948", "event_type": "Afterwork"},
+  {"id": 1070, "title": "February Afterwork | Geneva", "format": "ON_SITE", "start_date": "2026-02-18T17:30:00Z", "top_rated": false, "location": "Geneve", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1070", "event_type": "Afterwork"},
+  {"id": 1033, "title": "Human Resources | Global Speed Networking Online", "format": "ONLINE", "start_date": "2026-02-18T18:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1033", "event_type": "Meetup"},
+  {"id": 1034, "title": "Life Science, Psychology & Healthcare | Global Speed Networking Online", "format": "ONLINE", "start_date": "2026-02-18T18:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1034", "event_type": "Meetup"},
+  {"id": 975, "title": "Guided Tour at Beyer Watch Museum | Zurich", "format": "ON_SITE", "start_date": "2026-02-19T17:00:00Z", "top_rated": false, "location": "Zurich", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/975", "event_type": "Nova Knowledge"},
+  {"id": 1037, "title": "February Afterwork | Munich", "format": "ON_SITE", "start_date": "2026-02-19T17:30:00Z", "top_rated": true, "location": "Munich", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1037", "event_type": "Afterwork"},
+  {"id": 1077, "title": "AI, Google & the Future of Sales with Pablo Carlier | Online", "format": "ONLINE", "start_date": "2026-02-19T17:30:00Z", "top_rated": true, "location": "", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1077", "event_type": "Nova Knowledge"},
+  {"id": 1067, "title": "Nova Knowledge: Building a €200M Private Equity Scaleup + Afterwork | Madrid", "format": "ON_SITE", "start_date": "2026-02-19T19:45:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1067", "event_type": "Nova Knowledge"},
+  {"id": 1049, "title": "February Afterwork l Gothenburg", "format": "ON_SITE", "start_date": "2026-02-20T16:30:00Z", "top_rated": false, "location": "Gothenburg", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1049", "event_type": "Afterwork"},
+  {"id": 1096, "title": "Dine & Connect | Istanbul", "format": "ON_SITE", "start_date": "2026-02-21T16:00:00Z", "top_rated": true, "location": "Istanbul", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1096", "event_type": "Dine out"},
+  {"id": 1012, "title": "The Clubhouse's Long Run VI | London", "format": "ON_SITE", "start_date": "2026-02-22T07:45:00Z", "top_rated": false, "location": "SW15 1LB, London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1012", "event_type": "Weekend"},
+  {"id": 1035, "title": "Reduced Group Coaching Session - February | Madrid", "format": "ON_SITE", "start_date": "2026-02-23T18:00:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1035", "event_type": "Nova Knowledge"},
+  {"id": 1057, "title": "Software Engineering | Global Speed Networking Online", "format": "ONLINE", "start_date": "2026-02-24T18:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1057", "event_type": "Meetup"},
+  {"id": 961, "title": "Marketing Italy | Building a Brand that Wins: Minimum Viable Brand | Online", "format": "ONLINE", "start_date": "2026-02-25T17:30:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/961", "event_type": "Other"},
+  {"id": 1003, "title": "C-Level Dinner: Pepe Amoretti (ING) | Madrid", "format": "ON_SITE", "start_date": "2026-02-25T19:30:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1003", "event_type": "C-Level Dinner"},
+  {"id": 1058, "title": "February Networking Cocktail with South Summit | Berlin", "format": "ON_SITE", "start_date": "2026-02-26T16:30:00Z", "top_rated": false, "location": "Berlin", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1058", "event_type": "Afterwork"},
+  {"id": 1079, "title": "February Afterwork | Johannesburg reunion", "format": "ON_SITE", "start_date": "2026-02-26T16:30:00Z", "top_rated": false, "location": "Johannesburg", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1079", "event_type": "Afterwork"},
+  {"id": 1054, "title": "GEO & AI: The New Marketing Playbook (Amazon, Civitatis, Tuio, Omnia) | Madrid", "format": "ON_SITE", "start_date": "2026-02-26T17:00:00Z", "top_rated": true, "location": "Madrid", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1054", "event_type": "C-Level Talks"},
+  {"id": 1038, "title": "CEO Dinner: Roberto Macina (Next4 Group) | Rome", "format": "ON_SITE", "start_date": "2026-02-26T18:00:00Z", "top_rated": true, "location": "Rome", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1038", "event_type": "C-Level Talks"},
+  {"id": 1001, "title": "Future Leaders | Schwarzman Scholars", "format": "ONLINE", "start_date": "2026-02-26T18:00:00Z", "top_rated": true, "location": "", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1001", "event_type": "Other"},
+  {"id": 1081, "title": "February Afterwork | Paris", "format": "ON_SITE", "start_date": "2026-02-26T18:30:00Z", "top_rated": false, "location": "Paris", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1081", "event_type": "Afterwork"},
+  {"id": 1031, "title": "February Afterwork | Dublin", "format": "ON_SITE", "start_date": "2026-02-26T19:00:00Z", "top_rated": false, "location": "Dublin", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1031", "event_type": "Afterwork"},
+  {"id": 860, "title": "C-Level Dinner: Silvia Cerolini (Sanofi) | London", "format": "ON_SITE", "start_date": "2026-02-26T19:30:00Z", "top_rated": false, "location": "London", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/860", "event_type": "C-Level Dinner"},
+  {"id": 1063, "title": "Fine Dine 30+ | Barcelona", "format": "ON_SITE", "start_date": "2026-02-26T19:30:00Z", "top_rated": true, "location": "Barcelona", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1063", "event_type": "Senior Dine Out"},
+  {"id": 1111, "title": "Nova Padel Connect - Americana | Cologne", "format": "ON_SITE", "start_date": "2026-02-28T19:00:00Z", "top_rated": false, "location": "Cologne", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1111", "event_type": "Padel Event"},
+  {"id": 1013, "title": "The Clubhouse's Long Run VII | London", "format": "ON_SITE", "start_date": "2026-03-01T07:45:00Z", "top_rated": false, "location": "SW15 1LB, London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1013", "event_type": "Weekend"},
+  {"id": 1066, "title": "Sustainability & Social Impact Afterwork | Madrid", "format": "ON_SITE", "start_date": "2026-03-03T17:45:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1066", "event_type": "Afterwork"},
+  {"id": 1053, "title": "C-Level Dinner: Per Sundin (Pophouse Entertainment) | Stockholm ", "format": "ON_SITE", "start_date": "2026-03-03T18:00:00Z", "top_rated": false, "location": "Stockholm ", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1053", "event_type": "C-Level Dinner"},
+  {"id": 1093, "title": "Elevate your Legal Career: Exclusive Session with AMX Headhunting | Madrid", "format": "ON_SITE", "start_date": "2026-03-03T18:30:00Z", "top_rated": true, "location": "Madrid", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1093", "event_type": "Afterwork"},
+  {"id": 963, "title": "March Afterwork MWC | Barcelona", "format": "ON_SITE", "start_date": "2026-03-04T18:30:00Z", "top_rated": false, "location": "Barcelona", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/963", "event_type": "Afterwork"},
+  {"id": 1055, "title": "March Afterwork | Madrid", "format": "ON_SITE", "start_date": "2026-03-05T19:00:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1055", "event_type": "Afterwork"},
+  {"id": 1097, "title": "Ski Trip to Laax | Zurich", "format": "ON_SITE", "start_date": "2026-03-07T07:30:00Z", "top_rated": false, "location": "Zurich", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1097", "event_type": "Ski Trip"},
+  {"id": 1125, "title": "QS Discover – International Master’s Fair in Naples  ", "format": "ON_SITE", "start_date": "2026-03-07T12:00:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1125", "event_type": "Meetup"},
+  {"id": 1014, "title": "The Clubhouse's Long Run VIII | London", "format": "ON_SITE", "start_date": "2026-03-08T07:45:00Z", "top_rated": false, "location": "SW15 1LB, London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1014", "event_type": "Weekend"},
+  {"id": 1078, "title": "Easy Run + Brunch & Coffee Tasting | Madrid", "format": "ON_SITE", "start_date": "2026-03-08T09:00:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1078", "event_type": "Meetup"},
+  {"id": 1127, "title": "QS Discover – International Master’s Fair in Turin", "format": "ON_SITE", "start_date": "2026-03-09T12:30:00Z", "top_rated": false, "location": "Turin", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1127", "event_type": "Meetup"},
+  {"id": 1130, "title": " QS Connect – Exclusive MBA Event in Milan", "format": "ON_SITE", "start_date": "2026-03-09T17:00:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1130", "event_type": "Meetup"},
+  {"id": 1126, "title": "QS Discover – International Master’s Fair in Milan", "format": "ON_SITE", "start_date": "2026-03-10T12:30:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1126", "event_type": "Meetup"},
+  {"id": 1073, "title": "March Afterwork | Geneva", "format": "ON_SITE", "start_date": "2026-03-10T17:30:00Z", "top_rated": false, "location": "Geneve", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1073", "event_type": "Afterwork"},
+  {"id": 1098, "title": "Nova Knowledge: How to lead successfully now | Online", "format": "ONLINE", "start_date": "2026-03-10T18:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1098", "event_type": "Nova Knowledge"},
+  {"id": 1039, "title": "C-Level Dinner: Pablo López (Trade Republic) | Madrid", "format": "ON_SITE", "start_date": "2026-03-10T19:30:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1039", "event_type": "C-Level Dinner"},
+  {"id": 1042, "title": "C-Level Dinner: Isabel Marco Clement (McKinsey & Company) | London", "format": "ON_SITE", "start_date": "2026-03-10T20:00:00Z", "top_rated": true, "location": "London", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1042", "event_type": "C-Level Dinner"},
+  {"id": 861, "title": "March Afterwork | London", "format": "ON_SITE", "start_date": "2026-03-11T19:00:00Z", "top_rated": false, "location": "London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/861", "event_type": "Afterwork"},
+  {"id": 1080, "title": "Winetasting with the Winemaker | Madrid", "format": "ON_SITE", "start_date": "2026-03-11T19:30:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1080", "event_type": "Other"},
+  {"id": 1129, "title": "QS Discover – International Master’s Fair in Padova", "format": "ON_SITE", "start_date": "2026-03-12T15:00:00Z", "top_rated": false, "location": "Padova", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1129", "event_type": "Meetup"},
+  {"id": 1086, "title": "CEOs & Entrepreneurs March Afterwork 🍻 | Madrid", "format": "ON_SITE", "start_date": "2026-03-12T18:00:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1086", "event_type": "Afterwork"},
+  {"id": 1032, "title": "March Afterwork | Dublin", "format": "ON_SITE", "start_date": "2026-03-12T19:00:00Z", "top_rated": false, "location": "Dublin", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1032", "event_type": "Afterwork"},
+  {"id": 1139, "title": "NYC Emerging Artists Studios Tour", "format": "ON_SITE", "start_date": "2026-03-14T21:00:00Z", "top_rated": false, "location": "New York", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1139", "event_type": "Afterwork"},
+  {"id": 1015, "title": "The Clubhouse's Long Run IX | London", "format": "ON_SITE", "start_date": "2026-03-15T07:45:00Z", "top_rated": false, "location": "SW15 1LB, London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1015", "event_type": "Weekend"},
+  {"id": 1084, "title": "C-Level Dinner: Miguel Camiña  (Micappital) | Madrid", "format": "ON_SITE", "start_date": "2026-03-16T19:30:00Z", "top_rated": true, "location": "Madrid", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1084", "event_type": "C-Level Dinner"},
+  {"id": 965, "title": "March Afterwork | Milan", "format": "ON_SITE", "start_date": "2026-03-17T18:00:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/965", "event_type": "Afterwork"},
+  {"id": 1103, "title": "March Afterwork | Copenhagen", "format": "ON_SITE", "start_date": "2026-03-17T18:00:00Z", "top_rated": true, "location": "Copenhagen", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1103", "event_type": "Afterwork"},
+  {"id": 995, "title": "C-Level Dinner: Olga Shirokova (arol.dev & Kiara) | Barcelona", "format": "ON_SITE", "start_date": "2026-03-17T19:30:00Z", "top_rated": true, "location": "Barcelona", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/995", "event_type": "C-Level Dinner"},
+  {"id": 1131, "title": "C-Level Talk: How a Unicorn is Made with Nitya Fajardo (Factorial) | Online", "format": "ONLINE", "start_date": "2026-03-18T16:00:00Z", "top_rated": true, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1131", "event_type": "Nova Knowledge"},
+  {"id": 1116, "title": "March Afterwork | Berlin", "format": "ON_SITE", "start_date": "2026-03-18T18:00:00Z", "top_rated": false, "location": "Berlin", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1116", "event_type": "Afterwork"},
+  {"id": 1101, "title": "Nova Knowledge: Public Speaking with Susie Ashfield | London", "format": "ON_SITE", "start_date": "2026-03-18T18:30:00Z", "top_rated": true, "location": "London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1101", "event_type": "Nova Knowledge"},
+  {"id": 970, "title": "C-Level Dinner: Cristiana Scelza (Prysmian) | Milan", "format": "ON_SITE", "start_date": "2026-03-18T19:30:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/970", "event_type": "C-Level Dinner"},
+  {"id": 1121, "title": "March Afterwork | Stockholm", "format": "ON_SITE", "start_date": "2026-03-19T16:30:00Z", "top_rated": false, "location": "Stockholm", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1121", "event_type": "Afterwork"},
+  {"id": 1090, "title": "Nova x Inverto: Dive into the Future of Procurement", "format": "ON_SITE", "start_date": "2026-03-19T17:00:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1090", "event_type": "Other"},
+  {"id": 974, "title": "Spring Afterwork | Zurich", "format": "ON_SITE", "start_date": "2026-03-19T17:30:00Z", "top_rated": false, "location": "Zurich", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/974", "event_type": "Afterwork"},
+  {"id": 1047, "title": "March Happy Hour | Munich", "format": "ON_SITE", "start_date": "2026-03-19T17:30:00Z", "top_rated": false, "location": "Munich", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1047", "event_type": "Meetup"},
+  {"id": 1041, "title": "Reduced Group Coaching Session - March | Madrid ", "format": "ON_SITE", "start_date": "2026-03-19T18:00:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1041", "event_type": "Nova Knowledge"},
+  {"id": 1115, "title": "Nova Knowledge: The Startup Funding Map | Online", "format": "ONLINE", "start_date": "2026-03-19T18:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1115", "event_type": "Nova Knowledge"},
+  {"id": 990, "title": "Nova Padel Connect - Americana & Aperitivo | Barcelona", "format": "ON_SITE", "start_date": "2026-03-21T10:00:00Z", "top_rated": false, "location": "Barcelona", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/990", "event_type": "Padel Event"},
+  {"id": 1016, "title": "The Clubhouse's Long Run X | London", "format": "ON_SITE", "start_date": "2026-03-22T07:45:00Z", "top_rated": false, "location": "SW15 1LB, London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1016", "event_type": "Weekend"},
+  {"id": 1117, "title": "C-Level Dinner: Carla Barber (Clínicas Barber) | Madrid", "format": "ON_SITE", "start_date": "2026-03-23T19:30:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1117", "event_type": "C-Level Dinner"},
+  {"id": 1110, "title": "Marketing at Google Cloud: The Gen AI Revolution | Milan", "format": "ON_SITE", "start_date": "2026-03-24T17:30:00Z", "top_rated": false, "location": "Milan", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1110", "event_type": "Nova Knowledge"},
+  {"id": 1102, "title": "Nova Knowledge: From Big Tech to building your own path | Online", "format": "ONLINE", "start_date": "2026-03-24T18:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1102", "event_type": "Nova Knowledge"},
+  {"id": 998, "title": "March Happy Hour | New York", "format": "ON_SITE", "start_date": "2026-03-24T21:30:00Z", "top_rated": false, "location": "New York", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/998", "event_type": "Meetup"},
+  {"id": 1085, "title": "CEO Dinner: Catherine Doyle (Microsoft Ireland) | Dublin", "format": "ON_SITE", "start_date": "2026-03-25T17:45:00Z", "top_rated": true, "location": "Dublin", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1085", "event_type": "C-Level Talks"},
+  {"id": 1076, "title": "March Dinner | Geneva", "format": "ON_SITE", "start_date": "2026-03-25T18:30:00Z", "top_rated": false, "location": "Geneva", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1076", "event_type": "Dine out"},
+  {"id": 1092, "title": "Bowling Night & Dinner | Turin", "format": "ON_SITE", "start_date": "2026-03-25T19:00:00Z", "top_rated": false, "location": "Turin", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1092", "event_type": "Other"},
+  {"id": 1146, "title": "Dine & Connect | Paris", "format": "ON_SITE", "start_date": "2026-03-25T20:00:00Z", "top_rated": false, "location": "Paris", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1146", "event_type": "Senior Dine Out"},
+  {"id": 1166, "title": "Investments, PE & VC Afterwork: Fashion & Sustainability | Madrid", "format": "ON_SITE", "start_date": "2026-03-26T18:30:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1166", "event_type": "Afterwork"},
+  {"id": 1025, "title": "March Dine out | Padova", "format": "ON_SITE", "start_date": "2026-03-26T18:30:00Z", "top_rated": false, "location": "Padova", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1025", "event_type": "Dine out"},
+  {"id": 1108, "title": "March Afterwork | La Coruña", "format": "ON_SITE", "start_date": "2026-03-26T19:00:00Z", "top_rated": false, "location": "A Coruña", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1108", "event_type": "Afterwork"},
+  {"id": 1140, "title": "Historical Tour & Theatre | Istanbul", "format": "ON_SITE", "start_date": "2026-03-28T11:00:00Z", "top_rated": true, "location": "Istanbul", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1140", "event_type": "Other"},
+  {"id": 1100, "title": "Art & Connect @Fondazione Prada | Milan", "format": "ON_SITE", "start_date": "2026-03-28T15:00:00Z", "top_rated": true, "location": "Milan", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1100", "event_type": "Weekend"},
+  {"id": 1153, "title": "March Nova Drinks | Brussels", "format": "ON_SITE", "start_date": "2026-03-28T17:00:00Z", "top_rated": false, "location": "Brussels", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1153", "event_type": "Afterwork"},
+  {"id": 1017, "title": "The Clubhouse's Long Run XI | London", "format": "ON_SITE", "start_date": "2026-03-29T06:45:00Z", "top_rated": false, "location": "SW15 1LB, London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1017", "event_type": "Weekend"},
+  {"id": 1170, "title": "Nova Knowledge: Building a Product in 1 Week with AI (Demo) | Online", "format": "ONLINE", "start_date": "2026-03-31T16:00:00Z", "top_rated": false, "location": "", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1170", "event_type": "Nova Knowledge"},
+  {"id": 1154, "title": "March Afterwork | Rome", "format": "ON_SITE", "start_date": "2026-03-31T17:00:00Z", "top_rated": true, "location": "Rome", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1154", "event_type": "Afterwork"},
+  {"id": 1109, "title": "Nova Symposium: Thinking together | Madrid", "format": "ON_SITE", "start_date": "2026-03-31T17:30:00Z", "top_rated": false, "location": "Madrid", "few_tickets_left": true, "public_link": "https://app.novatalent.com/events/1109", "event_type": "Meetup"},
+  {"id": 1018, "title": "The Clubhouse's Long Run XII | London", "format": "ON_SITE", "start_date": "2026-04-05T06:45:00Z", "top_rated": false, "location": "SW15 1LB, London", "few_tickets_left": false, "public_link": "https://app.novatalent.com/events/1018", "event_type": "Weekend"}
 ];
 
 /* ── Public events (listed on Luma) ── */
@@ -569,54 +806,211 @@ const LUMA_LINKS = {
 
 /* ── Image system: real event photos from Nova ── */
 const EVENT_IMAGES = {
-  1170: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5448edb5efe2f6d60447fde79c74e6fb8354cc98d677995825ba06506d28770d11efc03f86c0542a579509445bee69de9',
-  1154: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5b1d9849d17ee25d9fd842e74f8e6e70fb0e61ddf52c1c86dd35f09c28a9516caa1dd6331eae7118bb61397b4b9a37bde',
-  1109: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5cacc205363cdc39e62fb0cc00d0121fc7eb5dc2a7d1a3034dfa844bf623c7ad5c067166fe20823d5033d27f60ea77c4f',
-  1018: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5647c36d5c03b0846bd29deca89b9f14affbce2d20672ed6b6f71fa5f4a2ff32bc27a1a5a2c502084d7adcceebcdf40dc',
-  1145: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf51c1ce915ede206d0bdc8ed3de351de60263d794e26189e89929beac9b54729379ecee358788177de5b1417fa55f3ac69',
-  1060: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf59b17c3445837a0febf56c43adf798fb6f50fc64496c462c80a22dda38246060438f3e9f48a384178675793a3e12e41bd',
-  1088: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5cfa271add7593604fbaedb2f699063c6c5987f745053c9b5a0fd5dd93892d86287923d455e2bf05f4fff684bc19df0d6',
-  1159: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf55a9054746ce959a6ac4b3d782c74d13cc2ab63462ea54c7e610c99249b33e0eb2976b2b1715c69554415973c22ef89ca',
-  1151: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf52667d2b0ec2058b32d86bbe73f1f29e196ed511443da132cf81946d7556e7909cb46a9db4b3ac1b6028c8875177dcc5a',
-  1167: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf506c382912bb8976991ee736c167e12c3578eec3b8c25c3b6ebc0753f8c6036798c7bfc0dc43aebc86acc7f201de5f575',
-  1120: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5ad998ef004390ee8a1516245b6c4cf50c19af625c7c00ffb021af058306c7e6878c94840cbad92e2b938d2c44d955090',
-  1019: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf56c08bf1305b1f273a1f78c90f4467a46d8ca0a7278670b67e7cb4e81434c4ed2edfe003eee1fd532bc0029fb80cf9ac7',
-  1083: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf57ac866757a695011054af579a7b63b5ab61131573c881a94d6f58215bbceecb7b549d19c9d51004a204156b42dd8629a',
-  1075: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf589301079f8e3ad3571f9f2241908c6f20ae5e5d3099bf80f93a1d63add0f65976b95a4a91d5d87cf9f05e97a1aa1ea79',
-  1156: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf55ae9d8b089a60345b403d3865b8ab2db1eae22135624337fec7da3f48072f9dbba07f6ca54d549caf62a6bd9dd9fc143',
-  1123: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf54223843298220b6e257696521efdcb8f406b44578bd595bdedf5a21afdddec1c176f374b31206ec1673b277859bcfce5',
-  1132: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf55baaa3dab1291c066d573bef29f181d5ac83d88c9496507c8b85ed7657669d0834e554bad92e578a86748bd181f15615',
-  1174: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5b183d3564db1229140b4e7bd9eaa5545558a48a595d4ce74ef1bed7279c715540d2b2aab2ea6c94407c56afe1256e28b',
-  972: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5f4ddd755e904570d7c6c7b63915bcd5abb79686ba8f10e1a20414d2bbfcc45077660b8d2115eeb657976d34fcf8c13ed',
-  1119: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf595346d49bb74f775d1d2dcf2fdc13f37509981a8e57857dfd0f7baee7d7413cafa47ae7512c67b815e0f3820b2495c9e',
-  1162: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5269b570c9cc16571928bef313641d221e770510a8fa26cba27742a875c240d6dfc94d278b53ab731a591d4eb46cac7fd',
-  1089: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5fdb1d3a28212f128fc9391a6b086e3d2a5441cadc0d62576a280ca9ff544e4826990d1976384a7b16a2c22cf9817215d',
-  1147: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf514027c267c68a31e98d7db000cd3f3f49c73234544b47d2707176202c67ecd37e6913983c3c5960d81202612f43799ab',
-  1176: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf56e390ba87bf222f2eba6b9a8b0555ca06df8e77c65789caf0550bcfd87c48797a8f4d5dd7bb4ce9f23baa172273627a1',
-  1107: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5e1d4e8d89eca797d8bb5dd470b8e1ceaf43e2a8b0803b1d7da50cc2c5dc4c9b1a47c80334ee3dd1c36e8e4999c23ca30',
-  1020: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5f7f9a4ffadd2ad021e29d916ca4358535e657c54cbaa39f1dffc433087f8a5616e598ce381267bb7a8ce4bfcfea07bfc',
-  1160: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5bcfed71b09317ea79d2e7d0fe050b7d175f58af39fe93f45136d3bb91d5348de28a03d769fe056a77ed5c5184fcf5d57',
-  1138: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5dee9d5e2ad20e617f19c4156704cc87860fb18b92c809e6fab68c3a4b8b566587036f97731f3a7b11220b2c58a22a5c1',
-  1180: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5c807bddae37c8b8b571da7bae2b2fc06de5a007a1e0bb3aa35982dd2be852f92272137135370fa134cac7b9ab7096301',
-  1175: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf58c461f11e9a3debb30af635f87544cf5907f31521566e11585b7387b0b323db1e60920eb6b56f7ba24e1bfcec08f1870',
-  1173: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf51605a161e45d9510cfec50f780d748d5a611e426cdcacfedeb00e921e405f3e1a4d1c02c603872d88c4f36d6576d8b4d',
-  1050: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf578979e049785be589cbe98b34593ef363286d09a1c8d146d9278da5703b6a030142335f1dc92326d2ab68dbfdcb3f220',
-  1142: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf52d71ab27d6175e4a18617911e2373027776c670766886c3c8fdba6cb8d6c2996e908a31cd3f1003d51bfbc23df7ce895',
-  1021: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf537540f97d0ef86412935c1e32f869b49cd27114fc023a4e4251a5ff7910bfad52129a02d94dee797fdabb32e3ab3141a',
-  1168: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf57db0e573e19b1d1fe9bb32c7272e3331ec8b595191d8f2ece9386a92957b5161c4b5329e217fdf160d2063326bd5c69d',
-  1179: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5b0d52e7c68a1be72f119062a34a6c6a6e8920abcadf5a0730bae6f25116d3eb4f550dedd5ebf08b1977bf52e2286f1ed',
-  1087: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf54668ec7fd71120d6d651564d03254af2ee17027cafa7055c32f2d7bdb884cd539798b83d77cd25370e0c1edec67ca9ba',
-  1114: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5d216eccf76de34eb629633f46d52ac824620f0cfb2060064ea93212d9398da527d71f562bb287dd42c5a8e2bab5aa120',
-  1104: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf51761153244aaa05219b933f0d63e63345b85d0fe0d18d4b509b0761da95391fd10c837b6cb822614c6f138531f2166e9',
-  1158: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf50528509170adb8abb31660870136a5fd637547c0cf9bbb80c1a6dda7c2e58cb67403713d0a7bbeb0139f906391bd427b',
-  1071: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf56b88eca2ddd1e039fb2629d55dbb89a27bcfaf2c722a7030aac2685268b2fe74d803dafeecb89202224b9978fc01240b',
+  696: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5f6c70db608c93f977318aa1386c94a9947ad607804a1735193db1bd448020341058ca42684ca028152bcd04d24af30a8',
+  855: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf52cd83fcc21fd543e4694d69b5c524b419ce7faade70f049cafa21f1f0cf1f4fd4d08f4908a9ba9b56b4eec28ad9efa07',
+  858: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5875d0af8fb9bc47513d8c1091f9555257d89dfb981ecb40f76fa1c1d2fa0df3e57feda0ada6fb0a1988f8a901ca9adc7',
+  859: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5e18c110c120328304338c5cc7143ef92ba8b6b5e6263dc3e652830f453893cac34850c42a7aac2bfb0359787cc123163',
+  860: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf55b108af347261a0d7921aee7ac79c2e371becad92d6cf7fdf8e9e2a43d06d00192b9be558b335330bffa01e45a765779',
+  861: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5d38d017238d44da18aae54848188ff189b536a8f2bbb70f135028fbedb618e02f7345fa719e33192490dbb4b71804b74',
+  875: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf51e4ea903361d33f7274ac3cd91bb9fdeba2a7c78bbbf7aadb16c3095c66577af04c85bdce9510f3bde62de4b60168320',
+  877: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf52b779a0c8f9d4c1a0ac0732fcaf17075ea2557bcc734c95908d70f10070ea435f2ab833fdfee89841d20c4bbfd207bf2',
+  880: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5c46b641fafa1ec84a35f2df64b56a686ad5b5a40641dfe3c7eb91779d7e3ed0bd6f00a87934112570aa389bb935f1068',
+  884: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5f929c62d1cb519d9b88cba30b88643d085f543d81f09a2016f7ab5cd70c2b54857525bb5e77e3c7e8149ae9ea0907c7e',
+  886: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf50948a7105fc20629d926a8a947877a33b6ec5f830dc8c2fe1fba64a780c422a6c3258105c3f34fb2c48fc141e781055f',
+  887: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5d122453ac81441b4bc8b72dc674dd1c92d07087f6402ef1a072db53c68baf05f2446c37b789fb99341a4171a5694664f',
+  899: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5db9f8d1e38e3700adbf1cefcb4bf27cc57671f75011a138add78c28c5df00c707155d06ae5be909b21a86f8af16a99b0',
+  904: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf504ce4de2eb2639d57c199396b49f035a4886dbb40446327477bfa9b3075aa5c8ae1e0853ad0e503ac050e5ec18247d76',
+  911: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf534d42ebf52c6f7d9ba368944722f6f3fae2c2a02db7e72cdd2de27ca5f6defb33154b797ed134d59836dd9c92532a82b',
+  915: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf56c62a9a43ac2078f2dbb7c6439e0a2d6a93205422c454ee3cf008ac995946c109845375934671731abd5f39a7e99e43c',
+  921: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf560145c5fe13e4f65956bb0d726e89b2d538c2afeb138b3ec70dd4d05f78d286ff9a44a26d7e8d05c27f878d82a310c80',
+  924: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5ee8e929ca2b7dc9b2e44c773871dcfb159a308c4ea65346ed82b811f5ac94382a3c70773980ca8837877843fa400dacb',
+  928: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf596905ec398f7ee4d82a8c47b0b7f19ff6749443d53dcc3cf2906aa37d3db2874aaeaf54191bfa94b4bee5dfb7a9ce17d',
+  930: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf52f7102006deabfcba9cc54df77e6c0613408b884d2ca02f47c5d5d0d4b3e56ef3dc08103df4b1e5a149be435d3a168f1',
+  934: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf57ea3201051cd6a998ab4fe214101f66e00c371bbb5ca284db56fa53b2e9e7ff712c139c206140bc8794f5920e95d16f5',
+  937: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5413f821aa477dc97b419853994640c477202ea1a629711a9734e044513e7078347e7cacfa5718af09588af45576b3e69',
+  939: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf545597f99e561270a5e787f6b89a68df2d42892b8d02828bfe762e44601af11f29fbb41932a55c16c9dc146339aead500',
+  941: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf554b4b106b65b51698817c28c2f019ee0d684adb3cfe2674e7e0057e81773765a057f875c51ecafcfdaa81e508cf7f72c',
+  943: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf591043ee6c6174d850925c62915f81fc076bae24b71d9871431cb23daac15a12bc0393e38ecac7e04ce9d4382233cc873',
+  945: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf543d535486b3b6503065ae647a236b685ab2f887e7b762b6db9f4e816e0749d9dfe2e1515c342ec414b27d538e4d15501',
+  946: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf57bb90c71eae7adba7ba79e1f6b23598f159a4e52855fc49baabddb26d754cf730d5f79a7d2c3e47c11e94a413fcb086f',
+  948: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5184bc7f970f8446f3940892848c980e3103085f0dd13c09a8452643f03ce800094590cd58282473f2e3bb542f5263f00',
+  951: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf53bb6d61001d295e79bb7771b7009a3e81a30fea3cda0cf8ad03e6068c01e4a7ca03f1cd1fc096d9d3c2f447c83e2c001',
+  952: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5cbf80d51dd0d901054365452870eb0b692103d67c59131ccbb58bc14bca9e3156e60457d1118d29d2a49f4973c3879ff',
+  953: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf543dc9c1c5f2516872990ca4427d7d715a295b3cec5cd36f052cd987905c675d9e12f206f9599458fe0283462573d4fdc',
+  957: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf51a77bdc2c19badbec189d3ea84ac218b69802b409a3a6d3d3b3b39478c7e0b77fa8b6e59081b272dc16adb76fb3ece8d',
+  958: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5ee3a25bdf6f4a83a4513a8cc7410944264c32870e1a9d2be4c81b85fe67d1ce475072f9b772ba685ba4f2fb737d48e1b',
   960: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf573709127bfb85db997f48ed3a646409617e21ca679339e8e134d26e1ab8507a4a9a972bd9217bd17d264bf35187c18f2',
-  1095: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf514756a1cb78f5294e5f606fd48df9df1b0f5314d98b27c039a9eca1fde2ed0440eec5c88ee669aafc6eaf17a1509e3dfc10ccca2aa792fd45e038b152aeb9099',
-  1074: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf52c4c744d180bc32f799a24b48632045ecc6b857827a719600b8016a03388403b1a5745ef5c0abd6ab008fa021fc24f42',
-  1094: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf544b383590e32faad740125d8ae995127644e230dcfc6afe21990fbdeeb1deffa76da41c3ff4c659fbf0b50e815f98a25',
+  961: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5259ee1f506f5c8e007211f90c72f0541c4cfc39c1077a7d7121b9223b3216b607ec188ccb73b660a70047ebeb3271ed4',
+  962: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf597ab8455b13e82460a20a8a6e7a741a240f5ced24dc6dca40b7e77852c6d8c598cf7c2b16359ad5262e185d65930b454',
+  963: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf526a3bf0cc29527bc4c9db0055af5a9b6116536826f48a7f938184e68a865d43e0751c495d9fc8d805d1f7e8458acb93f',
+  964: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf521a51e54d463af8908bc7209859bd5e293360e4ee6657c1a9bce7d2456fa9baa675779ce951acad9f521e1efe2d5e47d',
+  965: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5ebabfdb8ec53e4ef5693f81f808c4c6da91e97726c7d155bd3c1f99b72e74ebbd01c7c9919a19c9ffd93c63f7fe405ef',
+  968: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf54ea126a16df39cbf66cdb8d51dec7fb2b768c48cdb18d686b1e62f5fa4c19f58f31dc39a3589f2e631ea835f41fd5266',
+  969: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5e08add756158f545e2cdff38d294249f3bff7ce655e378c53f8d8a0e197022d4c18ceaecb62f155b94ee3af39421f91f',
+  970: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5c6d0d7428b6777c573a110d664f21aee5e909f8afffc50de21d3863e69fd4b66c9054156564f37c16c5de2907a907876',
+  972: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5f4ddd755e904570d7c6c7b63915bcd5abb79686ba8f10e1a20414d2bbfcc45077660b8d2115eeb657976d34fcf8c13ed',
+  974: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf595caf87cc3190c0ff326f20370d866f6aa0809916bd3f3339a84751b99adf047ff8d1be2027a6a661f641a6e9f3ed96c',
+  975: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf56853ba2d629ad5827579c5325e62ea2d6367145a8298bedebcd4fa0aefe245501421627c17ae0589cbcabc4a26b30084',
+  976: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf550bc92a5ccb600d8bab03f0268e0de5fb2f87854f5b2d22304169efcccb6f7055a6808cda6d4504b6ea0bdb430f62401',
+  978: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5552306e013afd121948b484b7fe3aac6f8d85679e41cb76789708afd5c0b1defb413831bb1ea5c219c0fcbbe5a4506df',
+  980: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5be2134e23a9ca909ab943f77247981eb2783ccbeb48cb8501b377ac70452db966449c554f619c18b0f253d69b48546e5',
+  981: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5ff65eaded5c9bca67a4f43d356f93d5d1bb971bfb3cefc053e096cb198436d0d31059e87cf76927bead942c694dfdd50',
+  982: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5f543d864956738fed4d04bae9ce95aa1e9e62f0dbf50d4307352ad33161efb16df48e78f57a94aade03313a32747d8bb',
+  986: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5010f080fe39d9fe1750bcf4cb9aa2805aaad212c333cf266dcda182e67b5261be0aa0280f7f9f42cd73523fcc02d4c59',
+  988: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf51cb6f258775eabc870769ba9b0fc50ec728cfa1c0a8ca322be4f68e8aceb3a15772c3f0be9537ed73e8302a74f45874a',
+  990: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf525e49389972fa6384533913830bcb08108aca7388a2c499ac09ab9970b70ac0ecf0c0854f41e70cc4f5b79151822eb62',
+  991: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5bc04f4365dd4a8f110ccdc2dae07413dde07a638e756ffe0b2d012970119d54336484a048f9eb1f21ab18c109d3ea2f4',
+  992: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf55eaeee66e80cb8a0373cdcd99393c1f83604b4f7b361d171473c2cfd37fe64f7c0f3364421724fa2a848bcfe0214c1a4',
+  994: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf56362e17a1078070c8f65c199f9252f910737082dcdfd756b95484b94454a94b13180b2f552167842f19b3b4c16c2e28e',
+  995: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5dd9ea3b5ad8d6195138c75560774fc2a016c807d83d543d58a765818a83ded8687ba6e51d704ff63fdcb3cf5f46fda74',
+  996: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5d4f8e7d81d72c8c600d89b097bf2fefa0b5fe92a900dd7197da6d48adbf6feee814d63e977d97a43c3e81b7e5ce3ad22',
+  997: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf55fd569a0562b8818fbf8b45323a13ce235e04ca480dc7798527bed50efa33466ff2b213b2d781c1c410b39bd66093294',
+  998: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf501a0c9b8cde2c05e8ddca558efe31ccfb35fd571901f7c7004da72112c02ef04729222168573a88c0b1f186498d0cd71',
+  999: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf56c3da5c9110c4845152e2fd8fd8b795818cfd995619065f2c6d1f9932a67fc2cc33c59bb6faa6fb8211d89a6a03b92d7',
+  1000: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5df7fe5e04bb351c12fbc806a3d8b1532f996438d27473e2b2507838940d68859d829eaee2352f6ea53ba2080c4bed2ed',
+  1001: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf53006572e46831d353279650765d224ff760e91e5c1f0d063876b60a7f813c2535c768840914e3925ae4e352153053abd',
+  1002: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf52214a1323c60075fe86131839b36da6cf75e58e038700b3e530a1fb74f4dc48c2dc237ccbe1868786db51aa4b3bf76ae',
+  1003: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5b5bc9d3d094c2931daba8d3caf48e97f59d8608ff327bd4b4b4c1f56ceeeda0d6cc12dc8bfe56ac46c8c89fe53e6a0ca',
+  1004: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5f4967493c720904fdc70e21190d57b4d7554ed77cbe3dcc62c6101b3485f5c19679689192192e482828e790ad2467de5',
+  1006: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5f6ec99c70c6d2998f3e8cdee44d57953f86b3d84d75dc475317907739fd0bc868634a709b28dbe01a8077eb6a9f0d013',
+  1008: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5f6ed635e164f4d6121abf03664a9fb016d5045f5540e7a7b5033268c0893aff89730f4e9d6e37e3c15e3fa03afecf073',
+  1009: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf53828019b68783f4630d22f0a657cc6ded0b0c14ab31b6f096495058b784217169c53509f982e6c80d2d26387d56a1e45',
+  1010: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf554ae833354b76f276d4f36960e01d60b70f88b7b2ac094ff0bdb925df768bd8908d4eb3d5bfe3b47fa5a8ba42cb0252a',
+  1011: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf59a4ed41e6ec754627b1a61f7999d4bc6439e9bc051e7dbd94682f295b311c8a1e184268f7cf7be0994d290ddba1d8c05',
+  1012: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf54c33725998c30e42bee0a179182320f1c16cda0b33cf7a10b8c1ee6831887708f34f61b499b39266f50bb0401986f135',
+  1013: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf52177e50fe353d90aecea9123151f2088677a905ec4e55afc25de0e19df7c4096b2bf09b23d22a7907d18cecd6a02a6a9',
+  1014: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5186ec27304807fc8f92331880c0b11a614e112f7370162dda4911d7a864cdd500bb1b5fe5deca6818c639424d5f4dd88',
+  1015: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf519ef942ddeec408968e3b5e21fe3eef915a12c3f298c61abd24749d9f699140f5a91858653c1f54924f68eb4614111e0',
+  1016: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5cdcb33c9c20272605b5df7c3f1ae5d7087eedfb508b84840157284d4b4838f278f614e3792ef00fa9c86edf15aa65253',
+  1017: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf57c335da78757b178f3f41f17a7fa2b0b3c18dc33fd680eb5c7f19029a4bbafcd6a5e659a1dad458706ed514fe3935dfe',
+  1018: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5647c36d5c03b0846bd29deca89b9f14affbce2d20672ed6b6f71fa5f4a2ff32bc27a1a5a2c502084d7adcceebcdf40dc',
+  1019: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf56c08bf1305b1f273a1f78c90f4467a46d8ca0a7278670b67e7cb4e81434c4ed2edfe003eee1fd532bc0029fb80cf9ac7',
+  1020: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5f7f9a4ffadd2ad021e29d916ca4358535e657c54cbaa39f1dffc433087f8a5616e598ce381267bb7a8ce4bfcfea07bfc',
+  1021: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf537540f97d0ef86412935c1e32f869b49cd27114fc023a4e4251a5ff7910bfad52129a02d94dee797fdabb32e3ab3141a',
+  1022: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf511b55f6a43d2fb091a81641315dfbe81c1c72865a51a0a5a83824f46ce62d252881ec494947646f1f483e725a39577b4',
+  1023: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5def276343e0f98bdad9527a8b424990737bb89b4276f395f24ab2e40c7c0542bacdb618f18f1702b137550f4c5adc9c65c74007b7b3a8c5a8c61ab510ce3faaa',
+  1024: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5dc09bbad1f46f90461127e51ca31dabc91e9a12a79908e0983b657af51bff23d9fa1ab5cc75a968f1d5535e3066ce68e',
+  1025: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf517261ad01a4e29ce19f7020b5e4271654d1154ee6c70d152e770b876c8d67e7f576112a8c27fc17e19144fe5925f5a2b',
+  1026: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf597bf17c5f65f0d390f2426eb254761df67ed0e910b65caf100e07ce83b1463d4177756c129fb52fc11d56c9ebe0fa1c1044ea5276b77ad1c71fc3ed6f29181c6',
+  1028: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf50038bdf3e1bd9890281108e1c4cb53a0f9631b562990f5a08155700ed00cfd2371e393995f7867b864add51ced39fe81',
+  1029: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5dcd543faa6ca09715d9e09da61dfdcf116901f4e86f2f34e7b8021ad31905f0f5c390efcebf50b9ffb047aab40750126',
+  1030: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5950f6a01d959acd81bf2605a20270e6d3ffd203ece692470d145de4db7eca40f59c684093fc756ddda7abc029fd7608d',
+  1031: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf538e1f9260a06ac783aec537be98027f175a9da3af1c60fbc0760b35271a51d6627b46fa16e6f8ca56c030157294fc7c2',
+  1032: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf524301a40b7076fab853c9aba4516f5cbbe030b023ed2c1ee70abcc9b1c3353d88b77284b4e04c08714f429fb633c827b',
+  1033: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5db12e79db52fd212056f3c16de8dddb6da6d0ed8e54dd25c8ea1cd4985ad497f256ce8ada6d291f14ea05daa570eb2cc',
+  1034: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf58b9dec660b3c4c349294c49179ab51b8550337ed574e8f36c67f1d4f401e8e0b2945e2bb05bac5ff1e922115945de7e8',
+  1035: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5719ad43025c3392acd818d29c5e7bc84b5b948ab9ce4757de237821a0059ff211bbda0334bc3c88f910e5356b8fded87',
+  1037: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf54e4e42f60440187f733bc4b6584c95410fb9fb15943b0c82dce2fb78855e50701ff70c0ac6a50abebd3b143da7f7efc9',
+  1038: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf50402ff408a186eef63e3384213b78579757efe3507a5fdb3aa3ea09baf5bb218dad43d4cba602ec98441b27e9e86f9eb',
+  1039: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5e2c1710d097079fbb848daf9459e7024e3680b006f9baa97e09033e08ea9a2b71317f2436065750334b6246c92778560',
+  1040: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf53a086f436c9d84504b21f9a6f4d0c3198260cdf6170623cbb36f4fa0118a5d31ac0c5333e4d6f4ce360129744692617e',
+  1041: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf552ebf371f176bbf313f6a24c09f82cb18c76a95a9525307b6c9b33ae02af997980fca6797095ca1a4aa29713a360c6d1',
+  1042: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5c7f97a7c2b410932b4180d85ce93f7cc5803db64401ab822b77352e36745a4164f0c9ee9de29874ba66399986b462118',
+  1045: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf51ef1ef32cfe1f79ef39faf5f72f2dc11491668129cfff74a5e6c83ae62af36597eaef60b03328672a1bf22714a981801',
+  1047: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf596dcd2126b1ce7618fde12938a3c3148a6691a75add2880d2e641146b0ed2b622ec9be913228d4306d39901a995ac130',
+  1049: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf56a932332ad1f7f4fe41bf0e21ad2517507681f103d23581e9459e3a708c32479cde94b86efb1bdd8a51df4e061963124',
+  1050: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf578979e049785be589cbe98b34593ef363286d09a1c8d146d9278da5703b6a030142335f1dc92326d2ab68dbfdcb3f220',
+  1053: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5ad6f8573f362047d03e4fb8ff6e32b12eb67cde32d02e77cd709722c9042c3d6ff0ab7a51df7ea16605f3a1ff995bf47',
+  1054: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5ec229d6b588ef7489e3f2fa5641486aafe2f29c7144a3a2d0cb17f5c477213709124dd986dc73ffb079f1ce15413d455',
+  1055: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5fd96c7c2be0cd5bf51e97aa79caf10f86d4a9f7cf6f0a765d3f5dd7201c57a33076d8ea867acb63f9127462713db0c71',
+  1056: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5a554efc62c0ade78853c1c3b7f8be262a883de9adc526b55de8651d3c640eea40f180312622b998ac07253b7057df509',
+  1057: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf54f2beb037d6b7cd0ada0389dbf0cc88206e056730d6068402bccb00acfdf9638eadb7be5cc43c36b0f8e9623b1b4d89b',
+  1058: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5359af15c98dd10abf9518a937e748499411e231c0996464bbc642ed2bb363f1cfb4f927c8ec5cf8e5beb1af7b0d46da3',
+  1060: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf59b17c3445837a0febf56c43adf798fb6f50fc64496c462c80a22dda38246060438f3e9f48a384178675793a3e12e41bd',
+  1063: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5ba87a4bd217e93cecf8bdab82968b2faca0ff64b326d4c95a6e72405a29f8163bf182ad41a374a231c3c75d54dfb6f41',
+  1066: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5639c2d5be84a804f4aeaae4318deb1a2b4d3ee849cb83685b6d4393cbfd6aabe612b60a798bdf2452e209273961eab8e',
+  1067: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf596b776ff4c68749498da704e8d67f8cdf68d3161bdc70f31d0c1b25b8a30a754cf0902c48b12011eb5a89504da03dac9',
+  1068: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5a17cb62f010c58239347aacafd56101fe8f3eb291db5b7bd74f570824c9caff9f9c0628de0879e9bf612fde900fb3bba',
+  1070: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf56f7d420c19c0e6fde6f7a106b5d67b89bb2326b366d2f6c9c5207d37be282c6467b993de738fe3705ea2bbc63591ad20',
+  1071: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf56b88eca2ddd1e039fb2629d55dbb89a27bcfaf2c722a7030aac2685268b2fe74d803dafeecb89202224b9978fc01240b',
   1072: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf58f2447a3fd088db7ed4a253294a32d82ac4fe7f29c35f539bf470459b644510235e7ba5bf18f90bbf01bb6bdb6f9dd61',
+  1073: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf59529778a1ae8be99a149cf3fb4f34d896b1ee92ced1fefa11d119d0f0a11f1be409c366f586a4dbc0bf613698280ecc74961d5016f1c68dc1733f3c4157dd0d9',
+  1074: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf52c4c744d180bc32f799a24b48632045ecc6b857827a719600b8016a03388403b1a5745ef5c0abd6ab008fa021fc24f42',
+  1075: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf589301079f8e3ad3571f9f2241908c6f20ae5e5d3099bf80f93a1d63add0f65976b95a4a91d5d87cf9f05e97a1aa1ea79',
+  1076: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf58350fb9a8fa2de082ddedabd523dd73cc78f9751afc08f00bb03db31d9f313774faa158487a3a1ab1c1d7aa840092767d0538c47132f5b8026502cb54a03f09d',
+  1077: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5a7b4bbbe36de2f7fa737952abe357eabbee05c25f7ea829165d36bfad15405d2b139f42e2d2326ef5437455d8daf543b',
+  1078: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf516eb8985ad2fbbf17954c9389cde3b448b2ad667dfc180a494dd07102c9a7043238417b6a194b9e6a19e148cf78ff115',
+  1079: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf51c1e740faba90ae11054da1904b4173a754f8c997c56440ce69bef8c8b5f124eaa441cd1f18b42655007a4e202c10f784b1a3f7542d0802dd5094fb4445136ea',
+  1080: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf579f90524c133151a096ea17b21f9e6652acba476222bfbe09c43aa26fb55fb86658d70ab021a338608c660f5b0af95b3',
+  1081: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf54f4c73590bd6cc816d5e599a002579e319de179cf7f5d6037a04c895fdd4ff59345a3ae9512c0661fd69406c8a3a136e',
+  1083: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf57ac866757a695011054af579a7b63b5ab61131573c881a94d6f58215bbceecb7b549d19c9d51004a204156b42dd8629a',
+  1084: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5ec849ee8749fd7421c7b209b145fa521ac858299cd11dd0b70ecee1c1a89f2e1f645dd7ef4889765f0dc58b5e061936c',
+  1085: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf58855438323683d08d0270e67b8d02c8a03f9e212da31b5abf68b48d6f7e6c1f3d90d5115e36717c87a6d4fa4546ebdc4',
+  1086: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5c3b4ad3574ebe49ff97f50d7cde2b6b70fe1c0d23830775db22b7435753853457626b85a4e3b66efa823929edb3c8d74',
+  1087: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf54668ec7fd71120d6d651564d03254af2ee17027cafa7055c32f2d7bdb884cd539798b83d77cd25370e0c1edec67ca9ba',
+  1088: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5cfa271add7593604fbaedb2f699063c6c5987f745053c9b5a0fd5dd93892d86287923d455e2bf05f4fff684bc19df0d6',
+  1089: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5fdb1d3a28212f128fc9391a6b086e3d2a5441cadc0d62576a280ca9ff544e4826990d1976384a7b16a2c22cf9817215d',
+  1090: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf525252191a34c750026bd06fe6224784afb3d09e858be3160bf79dd3f9eeca2c49b7156db5757234d7a10674d48b5798d',
+  1092: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5501c9f45c1b64c333680fdef0dba43ed1c91b187886dd642ec6cc9ffc819dd7ef27eeb4557bde364f5d85ec0da0529b9',
+  1093: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5d4abd0e5d4a1957c03b4ecd66a36618e5b4071976e887996cc5a202272eeb8ac1be643fc9df84f714365f9df8ce0da58',
+  1094: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf544b383590e32faad740125d8ae995127644e230dcfc6afe21990fbdeeb1deffa76da41c3ff4c659fbf0b50e815f98a25',
+  1095: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf514756a1cb78f5294e5f606fd48df9df1b0f5314d98b27c039a9eca1fde2ed0440eec5c88ee669aafc6eaf17a1509e3dfc10ccca2aa792fd45e038b152aeb9099',
+  1096: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf522def25860c2dfb95fb591fe42513df3abbd96b18d67db73996418c50e899d492676a0b2a7ec14e3c9d189f80c8a4c1c',
+  1097: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf548d2cb4f2bc9d31cedc123c905beaf7b7e9fde2779cd1489440ea01bbf4b1e215f2d8c81f46221d50b914026b440e3f9',
+  1098: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5b1f7023166ebe00ac34b2ae80aa0f6a23ee8388f8e6735eb66be45f439c01048b03551518e29dbb59ea6a512d3d415fa',
+  1100: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5f573934aa7a549319e335791b9af295147258f0ea822d34ab3573dcf66091adac0a0da68cbee874ad5999da86a54f9aa',
+  1101: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf599aed3d5234caefb525c9e12d2cbf21bb6c9d1da0e2b0e1e2e76a9dccfb0e3565141c0cb9fb2da5a9cb6fded346d57f8',
+  1102: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5176c3c9c71538d8a28f15a06a3631ff32526af395b7a3beeae6c747eb78b2a5a348a61c31316c6b4917967958623b8f0',
+  1103: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf578aac62578356ba6aae45c09238318d9f0f7b1eb7c19d5be3b94bd845fc93056b9cbc561f1b758eb52ccbdbba870853b',
+  1104: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf51761153244aaa05219b933f0d63e63345b85d0fe0d18d4b509b0761da95391fd10c837b6cb822614c6f138531f2166e9',
+  1107: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5e1d4e8d89eca797d8bb5dd470b8e1ceaf43e2a8b0803b1d7da50cc2c5dc4c9b1a47c80334ee3dd1c36e8e4999c23ca30',
+  1108: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5d5c21c781907f305493324da6a0cc36819e7c4bdf712744cf3594b6f9f3c6b8117eaaebdd186204c2efb89f81ddcfe09',
+  1109: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5cacc205363cdc39e62fb0cc00d0121fc7eb5dc2a7d1a3034dfa844bf623c7ad5c067166fe20823d5033d27f60ea77c4f',
+  1110: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5f5d49d584b63d35644670da35ed4f4cc2367f7a5c465cbd956eeb3f84ff8a2c8c70e2099954aa7f0ee45c582610ee60c',
+  1111: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5831382ad331e2c44f97004ce9372637ccbc78561ee56d808c6ad9593a5027c4b035d0e5ad971464c26dd954c2ed13c74',
+  1114: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5d216eccf76de34eb629633f46d52ac824620f0cfb2060064ea93212d9398da527d71f562bb287dd42c5a8e2bab5aa120',
+  1115: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf585a09fcfaa065e072273efe21c4be1b1411beb254c4497ab70a8de070c1b127e2883b8a57e2a46b2d1e4be2e4796ea0d',
+  1116: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf595047d3eafbc994a9f2d8d7c28352e863a6f60d2b6155fc7f305bc692b3bbf4616b541e6760533b92edf6c819cdd7ae9',
+  1117: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5ca27040d8ebcd7bfc75c13658c063e11deeb3c1979441ee529bdf9f684c019d33179b8692957c4b112ba2ce7f0cec6e7',
+  1119: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf595346d49bb74f775d1d2dcf2fdc13f37509981a8e57857dfd0f7baee7d7413cafa47ae7512c67b815e0f3820b2495c9e',
+  1120: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5ad998ef004390ee8a1516245b6c4cf50c19af625c7c00ffb021af058306c7e6878c94840cbad92e2b938d2c44d955090',
+  1121: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5a7fd0a2a951b346bccca4068b879c1b1941f860bdacbbef4dcfa894e3d40efe2057b7b6c0228538dbc37b89078262227',
+  1123: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf54223843298220b6e257696521efdcb8f406b44578bd595bdedf5a21afdddec1c176f374b31206ec1673b277859bcfce5',
+  1125: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5a7221a5d6d9e9559d4913a29b78a294556cd3e70c9285b9d742d7f3ba0dec6b828ae575ea1fe267adbf5c9d3fabfb19d',
+  1126: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf576e95a7005d6af13370656c55076eea6f7af684e09c9ef6c1a14dc4bb1e9c9bd78b5507c1d26945a5f4e465c10bbf02d',
+  1127: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf58d558cee38c196783ea6a7f060c2356e47818fc30c3f71afc4642b4caedddfd29437ba73ba46408465f188a66fe00543',
+  1129: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5e3471802aab8e41cd2c0cb3bb08955a08c54954ae0f101b8748c20421929e039cf408dcc4935ee55b4734956bd60b437',
+  1130: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf58a4dc4ce9abfe682297ca7e6c74ec4b9cfc4ae0630f8007975ad09dfc1ae304779b824a7b26f17fe26267ba2aac39964',
+  1131: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5522449a8412bc4b8a8ed3c5ecf708fb100f5740db4335273e749f3015e09b59313ac1e21e48e445a9cdaa9290851b8ce',
+  1132: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf55baaa3dab1291c066d573bef29f181d5ac83d88c9496507c8b85ed7657669d0834e554bad92e578a86748bd181f15615',
   1133: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5d45943e542b5987c6542443a6965f3f57a493e1a9aad4e9990ef9a948335915378e7205e56018860356fdb31092889be',
+  1138: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5dee9d5e2ad20e617f19c4156704cc87860fb18b92c809e6fab68c3a4b8b566587036f97731f3a7b11220b2c58a22a5c1',
+  1139: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf52e3e57e63be2410bef5ddf3e208032acd19c7708ac9cdf31a2e409843f6498985ab1b44056f9457df0700e04bde54a97',
+  1140: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf540c8ea22e03fe4a206ca7c53645d1008367826097f2a8eb43d407cfc1cde44f3a94063b09c2cdda550ee6df4f3a06c83d6d90789f4c53b9316dcaaf015ff99d4',
+  1142: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf52d71ab27d6175e4a18617911e2373027776c670766886c3c8fdba6cb8d6c2996e908a31cd3f1003d51bfbc23df7ce895',
+  1145: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf51c1ce915ede206d0bdc8ed3de351de60263d794e26189e89929beac9b54729379ecee358788177de5b1417fa55f3ac69',
+  1146: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf55a614e04803f2e1e98569d7a7bba991bacbe1c6d2e5ebd1f0ab4de14acb4ce3aadd90578d68f643cdca956d683ca97b3',
+  1147: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf514027c267c68a31e98d7db000cd3f3f49c73234544b47d2707176202c67ecd37e6913983c3c5960d81202612f43799ab',
   1148: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5ebc97033cc60dc17da148871b5a2c79d743ca71c2d2320d8c15c643ccb97abedfb7bbcfe9e8c05b1adf45e2f461c42e5',
+  1151: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf52667d2b0ec2058b32d86bbe73f1f29e196ed511443da132cf81946d7556e7909cb46a9db4b3ac1b6028c8875177dcc5a',
+  1153: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf54c00756a8f5e2c1a93690f9bfde0fe36268f5431702b640763fd2dbd74a1eeef05193f69f17efb893b5653aea7eb9fb6',
+  1154: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5b1d9849d17ee25d9fd842e74f8e6e70fb0e61ddf52c1c86dd35f09c28a9516caa1dd6331eae7118bb61397b4b9a37bde',
+  1156: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf55ae9d8b089a60345b403d3865b8ab2db1eae22135624337fec7da3f48072f9dbba07f6ca54d549caf62a6bd9dd9fc143',
+  1158: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf50528509170adb8abb31660870136a5fd637547c0cf9bbb80c1a6dda7c2e58cb67403713d0a7bbeb0139f906391bd427b',
+  1159: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf55a9054746ce959a6ac4b3d782c74d13cc2ab63462ea54c7e610c99249b33e0eb2976b2b1715c69554415973c22ef89ca',
+  1160: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5bcfed71b09317ea79d2e7d0fe050b7d175f58af39fe93f45136d3bb91d5348de28a03d769fe056a77ed5c5184fcf5d57',
+  1162: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5269b570c9cc16571928bef313641d221e770510a8fa26cba27742a875c240d6dfc94d278b53ab731a591d4eb46cac7fd',
+  1164: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5e895bf4bcf2cef6b75cc8a6ca1d31ef0eb429199dfe39295c120d8ea2989f3aec19b02fe7f21ddac5c8cfbb77dccb00c8680b00e790fb7d34a56bff23c90e75a',
+  1165: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5085c3b0b1e661ed194191589fb29485918b10c56496d2fafe6faf439178a863feb6927a9cd9c46bd780f61aa2b0de5c6',
+  1166: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf59d5207f32c02bafca880a457c53168b4cbc06d1bf2002a52886af44986435700db31a2328eb8e5aa7209534e96010e6e',
+  1167: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf506c382912bb8976991ee736c167e12c3578eec3b8c25c3b6ebc0753f8c6036798c7bfc0dc43aebc86acc7f201de5f575',
+  1168: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf57db0e573e19b1d1fe9bb32c7272e3331ec8b595191d8f2ece9386a92957b5161c4b5329e217fdf160d2063326bd5c69d',
+  1169: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5c4c33accc32c02d8f05227412a8c86acf9b2e4f624dcf7831a726351f6ecb1e7fa35aeb6963af506bccb00ebc5887b83',
+  1170: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5448edb5efe2f6d60447fde79c74e6fb8354cc98d677995825ba06506d28770d11efc03f86c0542a579509445bee69de9',
+  1173: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf51605a161e45d9510cfec50f780d748d5a611e426cdcacfedeb00e921e405f3e1a4d1c02c603872d88c4f36d6576d8b4d',
+  1174: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5b183d3564db1229140b4e7bd9eaa5545558a48a595d4ce74ef1bed7279c715540d2b2aab2ea6c94407c56afe1256e28b',
+  1175: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf58c461f11e9a3debb30af635f87544cf5907f31521566e11585b7387b0b323db1e60920eb6b56f7ba24e1bfcec08f1870',
+  1176: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf56e390ba87bf222f2eba6b9a8b0555ca06df8e77c65789caf0550bcfd87c48797a8f4d5dd7bb4ce9f23baa172273627a1',
+  1179: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5b0d52e7c68a1be72f119062a34a6c6a6e8920abcadf5a0730bae6f25116d3eb4f550dedd5ebf08b1977bf52e2286f1ed',
+  1180: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5c807bddae37c8b8b571da7bae2b2fc06de5a007a1e0bb3aa35982dd2be852f92272137135370fa134cac7b9ab7096301',
+  1181: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf52292845d904af6de983e891a97de8cb32a1d8eb1ea3384e92f56632fbba84bd979e99270ea4c64a1fda189b1e2d7795e',
+  1182: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf598e89fdd9be15185b14a3bbabf00817db57038c6e3a6fb5fcf6ac75fa9fa05e65cc0abf50a138ed7c570d5ed8132c67e',
+  1185: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5878cd082b114b7ab84ee8bac9d311f30dd308f6e9655221501eea84372c0d5b69d6c343ef6a0be62808a9ae5f3a40af7',
+  1186: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5fd20a6d758c9aad4f4cd52c0db1485b56acadc590c934c9faa7e344eefd16040acf8282f1adb6976b44bfe07a2dafa14',
+  1187: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5aeab95c3ae38f37f463fe0cb38885f5aa50e135038ad53e79f9be730136701d88c4e3f0f1155420ccb812826c3aa836c',
+  1191: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5aab79f239d8e3cd12d05ae340b765cb5dc547a2b05f16dc82f33bb33f9267830f53cb85aa395a2f963ba5fdfcf096e0e',
+  1194: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf5154949a0dba2d692d0b5c9aed665dd79d47a24efe9a6bc15ad7c3f397cee8c425c73f4e1f5f077203142c58a5120a0aa',
+  1197: 'https://quasar.novatalent.com/files?token=5fa2132ffa935b1e653d07bd83ebfcf51412c7aba1af6ed6f4ffc29a086a16265a9ae8f111d33904efc90c11b1acddb0243d87c939c24bd26a0a2393eab71e38'
 };
 
 function getEventImage(ev) {
@@ -635,8 +1029,9 @@ function formatLabel(f) {
   return 'On-site';
 }
 
-/* ── Build filter checkboxes ── */
-const eventTypes = [...new Set(EVENTS.map(e => e.event_type))].sort();
+/* ── Build filter checkboxes from ALL events ── */
+const allEvents = [...EVENTS, ...PAST_EVENTS];
+const eventTypes = [...new Set(allEvents.map(e => e.event_type))].sort();
 const dropdown = document.getElementById('filterDropdown');
 // "Select All" option
 const selectAllLbl = document.createElement('label');
@@ -667,7 +1062,7 @@ dropdown.addEventListener('change', (e) => {
   }
 });
 
-/* ── Public toggle ── */
+/* ── Public toggle (only affects future events) ── */
 const publicToggle = document.getElementById('publicToggle');
 let onlyPublic = false;
 publicToggle.addEventListener('click', () => {
@@ -676,8 +1071,17 @@ publicToggle.addEventListener('click', () => {
   render();
 });
 
+/* ── Past events toggle ── */
+const pastToggle = document.getElementById('pastToggle');
+const pastContent = document.getElementById('pastContent');
+pastToggle.addEventListener('click', () => {
+  pastContent.classList.toggle('show');
+  pastToggle.classList.toggle('open');
+});
+
 /* ── Render ── */
 const grid = document.getElementById('eventsGrid');
+const pastGrid = document.getElementById('pastEventsGrid');
 const countEl = document.getElementById('eventCount');
 const searchInput = document.getElementById('searchInput');
 const filterBtn = document.getElementById('filterBtn');
@@ -686,31 +1090,11 @@ function getSelectedTypes() {
   return [...dropdown.querySelectorAll('.type-cb:checked')].map(c => c.value);
 }
 
-function render() {
-  const q = searchInput.value.toLowerCase().trim();
-  const types = getSelectedTypes();
-
-  const filtered = EVENTS.filter(ev => {
-    if (!types.includes(ev.event_type)) return false;
-    if (onlyPublic && !PUBLIC_EVENT_IDS.has(ev.id)) return false;
-    if (q) {
-      const hay = (ev.title + ' ' + ev.location + ' ' + ev.event_type).toLowerCase();
-      return hay.includes(q);
-    }
-    return true;
-  });
-
-  countEl.innerHTML = `Showing <span>${filtered.length}</span> of ${EVENTS.length} events`;
-
-  if (filtered.length === 0) {
-    grid.innerHTML = '<div class="no-results">No events match your search. Try different keywords or filters.</div>';
-    return;
-  }
-
-  grid.innerHTML = filtered.map(ev => {
-    const img = getEventImage(ev);
-    const loc = ev.location || 'Online';
-    let badges = '';
+function renderCard(ev, isPast) {
+  const img = getEventImage(ev);
+  const loc = ev.location || 'Online';
+  let badges = '';
+  if (!isPast) {
     if (PUBLIC_EVENT_IDS.has(ev.id)) {
       badges += '<span class="badge-public">Try Nova</span>';
     } else {
@@ -718,9 +1102,10 @@ function render() {
     }
     if (ev.top_rated) badges += '<span class="badge-top">Top Rated</span>';
     if (ev.few_tickets_left) badges += '<span class="badge-few">Few tickets left</span>';
+  }
 
-    const link = LUMA_LINKS[ev.id] || ev.public_link;
-    return `<a class="card-link" href="${link}" target="_blank" rel="noopener">
+  const link = isPast ? ev.public_link : (LUMA_LINKS[ev.id] || ev.public_link);
+  return `<a class="card-link" href="${link}" target="_blank" rel="noopener">
       <div class="card-img-wrap">
         <img src="${img}" alt="${ev.title.replace(/"/g, '&quot;')}" loading="lazy">
       </div>
@@ -739,7 +1124,46 @@ function render() {
         </div>
       </div>
     </a>`;
-  }).join('');
+}
+
+function render() {
+  const q = searchInput.value.toLowerCase().trim();
+  const types = getSelectedTypes();
+
+  /* ── Future events ── */
+  const filtered = EVENTS.filter(ev => {
+    if (!types.includes(ev.event_type)) return false;
+    if (onlyPublic && !PUBLIC_EVENT_IDS.has(ev.id)) return false;
+    if (q) {
+      const hay = (ev.title + ' ' + ev.location + ' ' + ev.event_type).toLowerCase();
+      return hay.includes(q);
+    }
+    return true;
+  });
+
+  /* ── Past events (no public toggle) ── */
+  const filteredPast = PAST_EVENTS.filter(ev => {
+    if (!types.includes(ev.event_type)) return false;
+    if (q) {
+      const hay = (ev.title + ' ' + ev.location + ' ' + ev.event_type).toLowerCase();
+      return hay.includes(q);
+    }
+    return true;
+  });
+
+  countEl.innerHTML = `Showing <span>${filtered.length}</span> upcoming and <span>${filteredPast.length}</span> past events`;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="no-results">No upcoming events match your search. Try different keywords or filters.</div>';
+  } else {
+    grid.innerHTML = filtered.map(ev => renderCard(ev, false)).join('');
+  }
+
+  if (filteredPast.length === 0) {
+    pastGrid.innerHTML = '<div class="no-results">No past events match your search.</div>';
+  } else {
+    pastGrid.innerHTML = filteredPast.map(ev => renderCard(ev, true)).join('');
+  }
 }
 
 /* ── Events ── */
