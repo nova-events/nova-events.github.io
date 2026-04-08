@@ -1158,7 +1158,7 @@ function render() {
   /* ── Future events ── */
   const filtered = EVENTS.filter(ev => {
     if (!types.includes(ev.event_type)) return false;
-    if (onlyPublic && !PUBLIC_EVENT_IDS.has(ev.id)) return false;
+    if (onlyPublic && !PUBLIC_EVENT_IDS.has(ev.id) && ev.exclusivity !== 'MEMBERS_WITH_GUESTS') return false;
     if (q) {
       const hay = (ev.title + ' ' + ev.location + ' ' + ev.event_type).toLowerCase();
       return hay.includes(q);
