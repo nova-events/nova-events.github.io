@@ -548,6 +548,79 @@
       filter: grayscale(60%);
       transform: scale(1.06);
     }
+
+    /* Past events — sub-toggles by type */
+    .past-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .past-subtoggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--nova-card-bg);
+      border: 1px solid var(--nova-border);
+      border-radius: 8px;
+      color: var(--nova-text-secondary);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .past-subtoggle:hover {
+      border-color: var(--nova-accent);
+      color: var(--nova-text-primary);
+    }
+
+    .past-subtoggle.open {
+      border-color: var(--nova-accent);
+      color: var(--nova-text-primary);
+      border-radius: 8px 8px 0 0;
+    }
+
+    .past-subtoggle .sub-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .past-subtoggle .sub-count {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--nova-accent);
+      background: rgba(14,176,164,0.12);
+      padding: 2px 9px;
+      border-radius: 20px;
+    }
+
+    .past-subtoggle svg {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.3s;
+      flex-shrink: 0;
+    }
+
+    .past-subtoggle.open svg {
+      transform: rotate(180deg);
+    }
+
+    .past-subcontent {
+      border: 1px solid var(--nova-border);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      padding: 16px;
+      display: none;
+    }
+
+    .past-subcontent.show {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -584,7 +657,7 @@
       </button>
       <div class="past-content" id="pastContent">
         <p class="event-count" id="pastEventCount"></p>
-        <div class="grid" id="pastEventsGrid"></div>
+        <div class="past-groups" id="pastGroups"></div>
       </div>
     </div>
 
@@ -1394,9 +1467,21 @@ pastToggle.addEventListener('click', () => {
   pastToggle.classList.toggle('open');
 });
 
+/* ── Past events sub-toggles (by type) ── */
+const pastGroups = document.getElementById('pastGroups');
+const pastOpenTypes = new Set();
+pastGroups.addEventListener('click', (e) => {
+  const btn = e.target.closest('.past-subtoggle');
+  if (!btn) return;
+  const t = btn.dataset.type;
+  const nowOpen = btn.classList.toggle('open');
+  btn.nextElementSibling.classList.toggle('show', nowOpen);
+  if (nowOpen) pastOpenTypes.add(t); else pastOpenTypes.delete(t);
+});
+
 /* ── Render ── */
 const grid = document.getElementById('eventsGrid');
-const pastGrid = document.getElementById('pastEventsGrid');
+const pastEventCount = document.getElementById('pastEventCount');
 const countEl = document.getElementById('eventCount');
 const searchInput = document.getElementById('searchInput');
 const filterBtn = document.getElementById('filterBtn');
@@ -1476,10 +1561,33 @@ function render() {
     grid.innerHTML = filtered.map(ev => renderCard(ev, false)).join('');
   }
 
+  /* Group past events by type into collapsible sub-toggles */
+  const chevron = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>';
+
   if (filteredPast.length === 0) {
-    pastGrid.innerHTML = '<div class="no-results">No past events match your search.</div>';
+    pastEventCount.textContent = '';
+    pastGroups.innerHTML = '<div class="no-results">No past events match your search.</div>';
   } else {
-    pastGrid.innerHTML = filteredPast.map(ev => renderCard(ev, true)).join('');
+    const byType = {};
+    filteredPast.forEach(ev => { (byType[ev.event_type] = byType[ev.event_type] || []).push(ev); });
+    const typeNames = Object.keys(byType).sort();
+    const searching = q.length > 0;
+
+    pastEventCount.innerHTML = `<span>${filteredPast.length}</span> past events across <span>${typeNames.length}</span> categories`;
+
+    pastGroups.innerHTML = typeNames.map(t => {
+      const evs = byType[t];
+      const open = searching || pastOpenTypes.has(t);
+      return `<div class="past-group">
+        <button class="past-subtoggle${open ? ' open' : ''}" data-type="${t}">
+          <span class="sub-left">${t}<span class="sub-count">${evs.length}</span></span>
+          ${chevron}
+        </button>
+        <div class="past-subcontent${open ? ' show' : ''}">
+          <div class="grid">${evs.map(ev => renderCard(ev, true)).join('')}</div>
+        </div>
+      </div>`;
+    }).join('');
   }
 }
 
